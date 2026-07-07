@@ -1,7 +1,7 @@
 import 'package:aria2_rpc/src/_internal/consts.dart';
 import 'package:aria2_rpc/src/enum.dart';
 import 'package:aria2_rpc/src/result.dart';
-import 'package:collection/iterable_zip.dart';
+import 'package:collection/collection.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'response.g.dart';
@@ -46,6 +46,9 @@ class Aria2StringResponse {
       _$Aria2StringResponseFromJson(json);
 
   Map<String, dynamic> toJson() => _$Aria2StringResponseToJson(this);
+
+  @override
+  String toString() => toJson().toString();
 }
 
 @JsonSerializable()
@@ -59,6 +62,9 @@ class Aria2IntResponse {
       _$Aria2IntResponseFromJson(json);
 
   Map<String, dynamic> toJson() => _$Aria2IntResponseToJson(this);
+
+  @override
+  String toString() => toJson().toString();
 }
 
 @JsonSerializable()
@@ -72,6 +78,9 @@ class Aria2StringListResponse {
       _$Aria2StringListResponseFromJson(json);
 
   Map<String, dynamic> toJson() => _$Aria2StringListResponseToJson(this);
+
+  @override
+  String toString() => toJson().toString();
 }
 
 @JsonSerializable()
@@ -85,6 +94,9 @@ class Aria2IntListResponse {
       _$Aria2IntListResponseFromJson(json);
 
   Map<String, dynamic> toJson() => _$Aria2IntListResponseToJson(this);
+
+  @override
+  String toString() => toJson().toString();
 }
 
 @JsonSerializable(genericArgumentFactories: true)
@@ -114,6 +126,9 @@ class Aria2ResultListResponse<T extends Aria2Result> {
     Aria2GlobalStat() => object.toJson(),
     Aria2Version() => object.toJson(),
   };
+
+  @override
+  String toString() => toJson().toString();
 }
 
 @JsonSerializable(genericArgumentFactories: true)
@@ -142,6 +157,9 @@ class Aria2ResultResponse<T extends Aria2Result> {
         Aria2GlobalStat() => object.toJson(),
         Aria2Version() => object.toJson(),
       };
+
+  @override
+  String toString() => toJson().toString();
 }
 
 @JsonSerializable()
@@ -155,6 +173,9 @@ class Aria2ErrorResponse implements Exception {
       _$Aria2ErrorResponseFromJson(json);
 
   Map<String, dynamic> toJson() => _$Aria2ErrorResponseToJson(this);
+
+  @override
+  String toString() => toJson().toString();
 }
 
 @JsonSerializable(createFactory: false)
@@ -237,13 +258,6 @@ class Aria2MulticallResponse {
                 throw Exception('multicall is nested within multicall');
             }
           }
-          // if (i is List<dynamic>) {
-          //   if (i.length == 1) {
-          //     multiResult.add(i.first);
-          //   } else {}
-          // } else {
-          //   multiResult.add(Aria2Error.fromJson(i));
-          // }
         }
 
         return Aria2MulticallResponse(
@@ -257,6 +271,9 @@ class Aria2MulticallResponse {
   }
 
   Map<String, dynamic> toJson() => _$Aria2MulticallResponseToJson(this);
+
+  @override
+  String toString() => toJson().toString();
 }
 
 class Aria2BatchcallResponse {
@@ -327,11 +344,15 @@ class Aria2BatchcallResponse {
     }
     return Aria2BatchcallResponse(responses: responses);
   }
+
+  @override
+  String toString() => responses.toString();
 }
 
 @JsonSerializable()
 class Aria2NotificationResponse {
   final Aria2NotificationName method;
+  @JsonKey(name: 'params')
   final List<Aria2Notification> data;
 
   const Aria2NotificationResponse({required this.method, required this.data});
@@ -351,4 +372,7 @@ class Aria2NotificationResponse {
   }
 
   Map<String, dynamic> toJson() => _$Aria2NotificationResponseToJson(this);
+
+  @override
+  String toString() => toJson().toString();
 }

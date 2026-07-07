@@ -9,11 +9,11 @@ part of 'result.dart';
 Aria2DownloadingFile _$Aria2DownloadingFileFromJson(
   Map<String, dynamic> json,
 ) => Aria2DownloadingFile(
-  index: (json['index'] as num).toInt(),
+  index: int.parse(json['index'] as String),
   path: json['path'] as String,
-  length: (json['length'] as num).toInt(),
-  completedLength: (json['completedLength'] as num).toInt(),
-  selected: json['selected'] as bool,
+  length: int.parse(json['length'] as String),
+  completedLength: int.parse(json['completedLength'] as String),
+  selected: bool.parse(json['selected'] as String),
   uris: (json['uris'] as List<dynamic>)
       .map((e) => Aria2DownloadingUri.fromJson(e as Map<String, dynamic>))
       .toList(),
@@ -158,22 +158,38 @@ Aria2Option _$Aria2OptionFromJson(Map<String, dynamic> json) => Aria2Option(
   allProxy: json['all-proxy'] as String?,
   allProxyPasswd: json['all-proxy-passwd'] as String?,
   allProxyUser: json['all-proxy-user'] as String?,
-  allowOverwrite: json['allow-overwrite'] as bool?,
-  allowPieceLengthChange: json['allow-piece-length-change'] as bool?,
-  alwaysResume: json['always-resume'] as bool?,
-  asyncDns: json['async-dns'] as bool?,
-  autoFileRenaming: json['auto-file-renaming'] as bool?,
-  btEnableHookAfterHashCheck: json['bt-enable-hook-after-hash-check'] as bool?,
-  btEnableLpd: json['bt-enable-lpd'] as bool?,
+  allowOverwrite: BoolParser.tryParseIfNotNull(
+    json['allow-overwrite'] as String?,
+  ),
+  allowPieceLengthChange: BoolParser.tryParseIfNotNull(
+    json['allow-piece-length-change'] as String?,
+  ),
+  alwaysResume: BoolParser.tryParseIfNotNull(json['always-resume'] as String?),
+  asyncDns: BoolParser.tryParseIfNotNull(json['async-dns'] as String?),
+  autoFileRenaming: BoolParser.tryParseIfNotNull(
+    json['auto-file-renaming'] as String?,
+  ),
+  btEnableHookAfterHashCheck: BoolParser.tryParseIfNotNull(
+    json['bt-enable-hook-after-hash-check'] as String?,
+  ),
+  btEnableLpd: BoolParser.tryParseIfNotNull(json['bt-enable-lpd'] as String?),
   btExcludeTracker: (json['bt-exclude-tracker'] as List<dynamic>?)
       ?.map((e) => e as String)
       .toList(),
   btExternalIP: json['bt-external-ip'] as String?,
-  btForceEncryption: json['bt-force-encryption'] as bool?,
-  btHashCheckSeed: json['bt-hash-check-seed'] as bool?,
-  btLoadSavedMetadata: json['bt-load-saved-metadata'] as bool?,
-  btMaxPeers: (json['bt-max-peers'] as num?)?.toInt(),
-  btMetadataOnly: json['bt-metadata-only'] as bool?,
+  btForceEncryption: BoolParser.tryParseIfNotNull(
+    json['bt-force-encryption'] as String?,
+  ),
+  btHashCheckSeed: BoolParser.tryParseIfNotNull(
+    json['bt-hash-check-seed'] as String?,
+  ),
+  btLoadSavedMetadata: BoolParser.tryParseIfNotNull(
+    json['bt-load-saved-metadata'] as String?,
+  ),
+  btMaxPeers: IntParser.tryParseIfNotNull(json['bt-max-peers'] as String?),
+  btMetadataOnly: BoolParser.tryParseIfNotNull(
+    json['bt-metadata-only'] as String?,
+  ),
   btMinCryptoLevel: $enumDecodeNullable(
     _$Aria2BtCryptoLevelEnumMap,
     json['bt-min-crypto-level'],
@@ -183,33 +199,59 @@ Aria2Option _$Aria2OptionFromJson(Map<String, dynamic> json) => Aria2Option(
       : Aria2BtPrioritizePieceOption.fromJson(
           json['bt-prioritize-piece'] as Map<String, dynamic>,
         ),
-  btRemoveUnselectedFile: json['bt-remove-unselected-file'] as bool?,
+  btRemoveUnselectedFile: BoolParser.tryParseIfNotNull(
+    json['bt-remove-unselected-file'] as String?,
+  ),
   btRequestPeerSpeedLimit: json['bt-request-peer-speed-limit'] as String?,
-  btRequireCrypto: json['bt-require-crypto'] as bool?,
-  btSaveMetadata: json['bt-save-metadata'] as bool?,
-  btSeedUnverified: json['bt-seed-unverified'] as bool?,
-  btStopTimeout: (json['bt-stop-timeout'] as num?)?.toInt(),
-  btTracker: (json['bt-tracker'] as List<dynamic>?)
-      ?.map((e) => e as String)
-      .toList(),
-  btTrackerConnectTimeout: (json['bt-tracker-connect-timeout'] as num?)
-      ?.toInt(),
-  btTrackerInterval: (json['bt-tracker-interval'] as num?)?.toInt(),
-  btTrackerTimeout: (json['bt-tracker-timeout'] as num?)?.toInt(),
-  checkIntegrity: json['check-integrity'] as bool?,
+  btRequireCrypto: BoolParser.tryParseIfNotNull(
+    json['bt-require-crypto'] as String?,
+  ),
+  btSaveMetadata: BoolParser.tryParseIfNotNull(
+    json['bt-save-metadata'] as String?,
+  ),
+  btSeedUnverified: BoolParser.tryParseIfNotNull(
+    json['bt-seed-unverified'] as String?,
+  ),
+  btStopTimeout: IntParser.tryParseIfNotNull(
+    json['bt-stop-timeout'] as String?,
+  ),
+  btTracker: Aria2InputFileOption.btTrackerParse(json['bt-tracker'] as String?),
+  btTrackerConnectTimeout: IntParser.tryParseIfNotNull(
+    json['bt-tracker-connect-timeout'] as String?,
+  ),
+  btTrackerInterval: IntParser.tryParseIfNotNull(
+    json['bt-tracker-interval'] as String?,
+  ),
+  btTrackerTimeout: IntParser.tryParseIfNotNull(
+    json['bt-tracker-timeout'] as String?,
+  ),
+  checkIntegrity: BoolParser.tryParseIfNotNull(
+    json['check-integrity'] as String?,
+  ),
   checksum: json['checksum'] == null
       ? null
       : Aria2HashOption.fromJson(json['checksum'] as Map<String, dynamic>),
-  conditionalGet: json['conditional-get'] as bool?,
-  connectTimeout: (json['connect-timeout'] as num?)?.toInt(),
-  contentDispositionDefaultUtf8:
-      json['content-disposition-default-utf8'] as bool?,
-  aria2Continue: json['continue'] as bool?,
+  conditionalGet: BoolParser.tryParseIfNotNull(
+    json['conditional-get'] as String?,
+  ),
+  connectTimeout: IntParser.tryParseIfNotNull(
+    json['connect-timeout'] as String?,
+  ),
+  contentDispositionDefaultUtf8: BoolParser.tryParseIfNotNull(
+    json['content-disposition-default-utf8'] as String?,
+  ),
+  aria2Continue: BoolParser.tryParseIfNotNull(json['continue'] as String?),
   dir: json['dir'] as String?,
-  enableHttpKeepAlive: json['enable-http-keep-alive'] as bool?,
-  enableHttpPipelining: json['enable-http-pipelining'] as bool?,
-  enableMmap: json['enable-mmap'] as bool?,
-  enablePeerExchange: json['enable-peer-exchange'] as bool?,
+  enableHttpKeepAlive: BoolParser.tryParseIfNotNull(
+    json['enable-http-keep-alive'] as String?,
+  ),
+  enableHttpPipelining: BoolParser.tryParseIfNotNull(
+    json['enable-http-pipelining'] as String?,
+  ),
+  enableMmap: BoolParser.tryParseIfNotNull(json['enable-mmap'] as String?),
+  enablePeerExchange: BoolParser.tryParseIfNotNull(
+    json['enable-peer-exchange'] as String?,
+  ),
   fileAllocation: $enumDecodeNullable(
     _$Aria2FileAllocationMethodEnumMap,
     json['file-allocation'],
@@ -222,21 +264,29 @@ Aria2Option _$Aria2OptionFromJson(Map<String, dynamic> json) => Aria2Option(
     _$Aria2SymbolEnumMap,
     json['follow-torrent'],
   ),
-  forceSave: json['force-save'] as bool?,
+  forceSave: BoolParser.tryParseIfNotNull(json['force-save'] as String?),
   ftpPasswd: json['ftp-passwd'] as String?,
-  ftpPasv: json['ftp-pasv'] as bool?,
+  ftpPasv: BoolParser.tryParseIfNotNull(json['ftp-pasv'] as String?),
   ftpProxy: json['ftp-proxy'] as String?,
   ftpProxyPasswd: json['ftp-proxy-passwd'] as String?,
   ftpProxyUser: json['ftp-proxy-user'] as String?,
-  ftpReuseConnection: json['ftp-reuse-connection'] as bool?,
+  ftpReuseConnection: BoolParser.tryParseIfNotNull(
+    json['ftp-reuse-connection'] as String?,
+  ),
   ftpType: $enumDecodeNullable(_$Aria2FTPTypeEnumMap, json['ftp-type']),
   ftpUser: json['ftp-user'] as String?,
   gid: json['gid'] as String?,
-  hashCheckOnly: json['hash-check-only'] as bool?,
+  hashCheckOnly: BoolParser.tryParseIfNotNull(
+    json['hash-check-only'] as String?,
+  ),
   header: (json['header'] as List<dynamic>?)?.map((e) => e as String).toList(),
-  httpAcceptGzip: json['http-accept-gzip'] as bool?,
-  httpAuthChallenge: json['http-auth-challenge'] as bool?,
-  httpNoCache: json['http-no-cache'] as bool?,
+  httpAcceptGzip: BoolParser.tryParseIfNotNull(
+    json['http-accept-gzip'] as String?,
+  ),
+  httpAuthChallenge: BoolParser.tryParseIfNotNull(
+    json['http-auth-challenge'] as String?,
+  ),
+  httpNoCache: BoolParser.tryParseIfNotNull(json['http-no-cache'] as String?),
   httpPasswd: json['http-passwd'] as String?,
   httpProxy: json['http-proxy'] as String?,
   httpProxyPasswd: json['http-proxy-passwd'] as String?,
@@ -249,15 +299,22 @@ Aria2Option _$Aria2OptionFromJson(Map<String, dynamic> json) => Aria2Option(
     (k, e) => MapEntry(int.parse(k), e as String),
   ),
   lowestSpeedLimit: json['lowest-speed-limit'] as String?,
-  maxConnectionPerServer: (json['max-connection-per-server'] as num?)?.toInt(),
+  maxConnectionPerServer: IntParser.tryParseIfNotNull(
+    json['max-connection-per-server'] as String?,
+  ),
   maxDownloadLimit: json['max-download-limit'] as String?,
-  maxFileNotFound: (json['max-file-not-found'] as num?)?.toInt(),
+  maxFileNotFound: IntParser.tryParseIfNotNull(
+    json['max-file-not-found'] as String?,
+  ),
   maxMmapLimit: json['max-mmap-limit'] as String?,
-  maxResumeFailureTries: (json['max-resume-failure-tries'] as num?)?.toInt(),
-  maxTries: (json['max-tries'] as num?)?.toInt(),
+  maxResumeFailureTries: IntParser.tryParseIfNotNull(
+    json['max-resume-failure-tries'] as String?,
+  ),
+  maxTries: IntParser.tryParseIfNotNull(json['max-tries'] as String?),
   maxUploadLimit: json['max-upload-limit'] as String?,
-  metalinkEnableUniqueProtocol:
-      json['metalink-enable-unique-protocol'] as bool?,
+  metalinkEnableUniqueProtocol: BoolParser.tryParseIfNotNull(
+    json['metalink-enable-unique-protocol'] as String?,
+  ),
   metalinkLanguage: json['metalink-language'] as String?,
   metalinkLocation: (json['metalink-location'] as List<dynamic>?)
       ?.map((e) => e as String)
@@ -270,26 +327,32 @@ Aria2Option _$Aria2OptionFromJson(Map<String, dynamic> json) => Aria2Option(
   metalinkVersion: json['metalink-version'] as String?,
   minSplitSize: json['min-split-size'] as String?,
   noFileAllocationLimit: json['no-file-allocation-limit'] as String?,
-  noNetrc: json['no-netrc'] as bool?,
+  noNetrc: BoolParser.tryParseIfNotNull(json['no-netrc'] as String?),
   noProxy: (json['no-proxy'] as List<dynamic>?)
       ?.map((e) => e as String)
       .toList(),
   out: json['out'] as String?,
-  pauseMetadata: json['pause-metadata'] as bool?,
+  pauseMetadata: BoolParser.tryParseIfNotNull(
+    json['pause-metadata'] as String?,
+  ),
   proxyMethod: $enumDecodeNullable(
     _$Aria2ProxyMethodEnumMap,
     json['proxy-method'],
   ),
-  realtimeChunkChecksum: json['realtime-chunk-checksum'] as bool?,
+  realtimeChunkChecksum: BoolParser.tryParseIfNotNull(
+    json['realtime-chunk-checksum'] as String?,
+  ),
   referer: json['referer'] as String?,
-  remoteTime: json['remote-time'] as bool?,
-  removeControlFile: json['remove-control-file'] as bool?,
-  retryWait: (json['retry-wait'] as num?)?.toInt(),
-  reuseUri: json['reuse-uri'] as bool?,
-  seedRatio: (json['seed-ratio'] as num?)?.toDouble(),
-  seedTime: (json['seed-time'] as num?)?.toDouble(),
+  remoteTime: BoolParser.tryParseIfNotNull(json['remote-time'] as String?),
+  removeControlFile: BoolParser.tryParseIfNotNull(
+    json['remove-control-file'] as String?,
+  ),
+  retryWait: IntParser.tryParseIfNotNull(json['retry-wait'] as String?),
+  reuseUri: BoolParser.tryParseIfNotNull(json['reuse-uri'] as String?),
+  seedRatio: DoubleParser.tryParseIfNotNull(json['seed-ratio'] as String?),
+  seedTime: DoubleParser.tryParseIfNotNull(json['seed-time'] as String?),
   selectFile: json['select-file'] as String?,
-  split: (json['split'] as num?)?.toInt(),
+  split: IntParser.tryParseIfNotNull(json['split'] as String?),
   sshHostKeyMd: json['ssh-host-key-md'] == null
       ? null
       : Aria2HashOption.fromJson(
@@ -299,12 +362,12 @@ Aria2Option _$Aria2OptionFromJson(Map<String, dynamic> json) => Aria2Option(
     _$Aria2StreamPieceSelectorEnumMap,
     json['stream-piece-selector'],
   ),
-  timeout: (json['timeout'] as num?)?.toInt(),
+  timeout: IntParser.tryParseIfNotNull(json['timeout'] as String?),
   uriSelector: $enumDecodeNullable(
     _$Aria2UriSelectorEnumMap,
     json['uri-selector'],
   ),
-  useHead: json['use-head'] as bool?,
+  useHead: BoolParser.tryParseIfNotNull(json['use-head'] as String?),
   userAgent: json['user-agent'] as String?,
 );
 
@@ -342,7 +405,7 @@ Map<String, dynamic> _$Aria2OptionToJson(
   'bt-tracker-interval': ?instance.btTrackerInterval,
   'bt-tracker-timeout': ?instance.btTrackerTimeout,
   'check-integrity': ?instance.checkIntegrity,
-  'checksum': ?instance.checksum,
+  'checksum': ?Aria2HashOption.toInput(instance.checksum),
   'conditional-get': ?instance.conditionalGet,
   'connect-timeout': ?instance.connectTimeout,
   'content-disposition-default-utf8': ?instance.contentDispositionDefaultUtf8,
@@ -413,7 +476,7 @@ Map<String, dynamic> _$Aria2OptionToJson(
   'seed-time': ?instance.seedTime,
   'select-file': ?instance.selectFile,
   'split': ?instance.split,
-  'ssh-host-key-md': ?instance.sshHostKeyMd,
+  'ssh-host-key-md': ?Aria2HashOption.toInput(instance.sshHostKeyMd),
   'stream-piece-selector':
       ?_$Aria2StreamPieceSelectorEnumMap[instance.streamPieceSelector],
   'timeout': ?instance.timeout,
@@ -472,7 +535,7 @@ const _$Aria2UriSelectorEnumMap = {
 
 Aria2LinkedServer _$Aria2LinkedServerFromJson(Map<String, dynamic> json) =>
     Aria2LinkedServer(
-      index: (json['index'] as num).toInt(),
+      index: int.parse(json['index'] as String),
       servers: (json['servers'] as List<dynamic>)
           .map((e) => Aria2LinkedServerInfo.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -489,12 +552,12 @@ Map<String, dynamic> _$Aria2SessionInfoToJson(Aria2SessionInfo instance) =>
 
 Aria2GlobalStat _$Aria2GlobalStatFromJson(Map<String, dynamic> json) =>
     Aria2GlobalStat(
-      downloadSpeed: (json['downloadSpeed'] as num).toInt(),
-      uploadSpeed: (json['uploadSpeed'] as num).toInt(),
-      numActive: (json['numActive'] as num).toInt(),
-      numWaiting: (json['numWaiting'] as num).toInt(),
-      numStopped: (json['numStopped'] as num).toInt(),
-      numStoppedTotal: (json['numStoppedTotal'] as num).toInt(),
+      downloadSpeed: int.parse(json['downloadSpeed'] as String),
+      uploadSpeed: int.parse(json['uploadSpeed'] as String),
+      numActive: int.parse(json['numActive'] as String),
+      numWaiting: int.parse(json['numWaiting'] as String),
+      numStopped: int.parse(json['numStopped'] as String),
+      numStoppedTotal: int.parse(json['numStoppedTotal'] as String),
     );
 
 Map<String, dynamic> _$Aria2GlobalStatToJson(Aria2GlobalStat instance) =>

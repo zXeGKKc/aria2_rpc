@@ -98,7 +98,7 @@ Aria2NotificationResponse _$Aria2NotificationResponseFromJson(
   Map<String, dynamic> json,
 ) => Aria2NotificationResponse(
   method: $enumDecode(_$Aria2NotificationNameEnumMap, json['method']),
-  data: (json['data'] as List<dynamic>)
+  data: (json['params'] as List<dynamic>)
       .map((e) => Aria2Notification.fromJson(e as Map<String, dynamic>))
       .toList(),
 );
@@ -106,15 +106,15 @@ Aria2NotificationResponse _$Aria2NotificationResponseFromJson(
 Map<String, dynamic> _$Aria2NotificationResponseToJson(
   Aria2NotificationResponse instance,
 ) => <String, dynamic>{
-  'method': _$Aria2NotificationNameEnumMap[instance.method],
-  'data': instance.data,
+  'method': _$Aria2NotificationNameEnumMap[instance.method]!,
+  'params': instance.data,
 };
 
 const _$Aria2NotificationNameEnumMap = {
-  Aria2NotificationName.onDownloadStart: null,
-  Aria2NotificationName.onDownloadPause: null,
-  Aria2NotificationName.onDownloadStop: null,
-  Aria2NotificationName.onDownloadComplete: null,
-  Aria2NotificationName.onDownloadError: null,
-  Aria2NotificationName.onBtDownloadComplete: null,
+  Aria2NotificationName.onDownloadStart: 'aria2.onDownloadStart',
+  Aria2NotificationName.onDownloadPause: 'aria2.onDownloadPause',
+  Aria2NotificationName.onDownloadStop: 'aria2.onDownloadStop',
+  Aria2NotificationName.onDownloadComplete: 'aria2.onDownloadComplete',
+  Aria2NotificationName.onDownloadError: 'aria2.onDownloadError',
+  Aria2NotificationName.onBtDownloadComplete: 'aria2.onBtDownloadComplete',
 };

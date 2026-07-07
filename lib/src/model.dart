@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:aria2_rpc/src/_internal/consts.dart';
+import 'package:aria2_rpc/src/_internal/extension.dart';
 import 'package:aria2_rpc/src/enum.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -41,6 +42,9 @@ class Aria2BitTorrentData {
   }
 
   Map<String, dynamic> toJson() => _$Aria2BitTorrentDataToJson(this);
+
+  @override
+  String toString() => toJson().toString();
 }
 
 @JsonSerializable()
@@ -62,6 +66,9 @@ class Aria2BitTorrentInfo {
   }
 
   Map<String, dynamic> toJson() => _$Aria2BitTorrentInfoToJson(this);
+
+  @override
+  String toString() => toJson().toString();
 }
 
 @JsonSerializable()
@@ -86,6 +93,9 @@ class Aria2BtPrioritizePieceOption {
   }
 
   Map<String, dynamic> toJson() => _$Aria2BtPrioritizePieceOptionToJson(this);
+
+  @override
+  String toString() => toJson().toString();
 }
 
 @JsonSerializable(includeIfNull: false)
@@ -96,81 +106,105 @@ class Aria2InputFileOption {
   final String? allProxyPasswd;
   @JsonKey(name: 'all-proxy-user')
   final String? allProxyUser;
-  @JsonKey(name: 'allow-overwrite')
+  @JsonKey(name: 'allow-overwrite', fromJson: BoolParser.tryParseIfNotNull)
   final bool? allowOverwrite;
-  @JsonKey(name: 'allow-piece-length-change')
+  @JsonKey(
+    name: 'allow-piece-length-change',
+    fromJson: BoolParser.tryParseIfNotNull,
+  )
   final bool? allowPieceLengthChange;
-  @JsonKey(name: 'always-resume')
+  @JsonKey(name: 'always-resume', fromJson: BoolParser.tryParseIfNotNull)
   final bool? alwaysResume;
-  @JsonKey(name: 'async-dns')
+  @JsonKey(name: 'async-dns', fromJson: BoolParser.tryParseIfNotNull)
   final bool? asyncDns;
-  @JsonKey(name: 'auto-file-renaming')
+  @JsonKey(name: 'auto-file-renaming', fromJson: BoolParser.tryParseIfNotNull)
   final bool? autoFileRenaming;
-  @JsonKey(name: 'bt-enable-hook-after-hash-check')
+  @JsonKey(
+    name: 'bt-enable-hook-after-hash-check',
+    fromJson: BoolParser.tryParseIfNotNull,
+  )
   final bool? btEnableHookAfterHashCheck;
-  @JsonKey(name: 'bt-enable-lpd')
+  @JsonKey(name: 'bt-enable-lpd', fromJson: BoolParser.tryParseIfNotNull)
   final bool? btEnableLpd;
   @JsonKey(name: 'bt-exclude-tracker')
   final List<String>? btExcludeTracker;
   @JsonKey(name: 'bt-external-ip')
   final String? btExternalIP;
-  @JsonKey(name: 'bt-force-encryption')
+  @JsonKey(name: 'bt-force-encryption', fromJson: BoolParser.tryParseIfNotNull)
   final bool? btForceEncryption;
-  @JsonKey(name: 'bt-hash-check-seed')
+  @JsonKey(name: 'bt-hash-check-seed', fromJson: BoolParser.tryParseIfNotNull)
   final bool? btHashCheckSeed;
-  @JsonKey(name: 'bt-load-saved-metadata')
+  @JsonKey(
+    name: 'bt-load-saved-metadata',
+    fromJson: BoolParser.tryParseIfNotNull,
+  )
   final bool? btLoadSavedMetadata;
-  @JsonKey(name: 'bt-max-peers')
+  @JsonKey(name: 'bt-max-peers', fromJson: IntParser.tryParseIfNotNull)
   final int? btMaxPeers;
-  @JsonKey(name: 'bt-metadata-only')
+  @JsonKey(name: 'bt-metadata-only', fromJson: BoolParser.tryParseIfNotNull)
   final bool? btMetadataOnly;
   @JsonKey(name: 'bt-min-crypto-level')
   final Aria2BtCryptoLevel? btMinCryptoLevel;
   @JsonKey(name: 'bt-prioritize-piece')
   final Aria2BtPrioritizePieceOption? btPrioritizePiece;
-  @JsonKey(name: 'bt-remove-unselected-file')
+  @JsonKey(
+    name: 'bt-remove-unselected-file',
+    fromJson: BoolParser.tryParseIfNotNull,
+  )
   final bool? btRemoveUnselectedFile;
   @JsonKey(name: 'bt-request-peer-speed-limit')
   final String? btRequestPeerSpeedLimit;
-  @JsonKey(name: 'bt-require-crypto')
+  @JsonKey(name: 'bt-require-crypto', fromJson: BoolParser.tryParseIfNotNull)
   final bool? btRequireCrypto;
-  @JsonKey(name: 'bt-save-metadata')
+  @JsonKey(name: 'bt-save-metadata', fromJson: BoolParser.tryParseIfNotNull)
   final bool? btSaveMetadata;
-  @JsonKey(name: 'bt-seed-unverified')
+  @JsonKey(name: 'bt-seed-unverified', fromJson: BoolParser.tryParseIfNotNull)
   final bool? btSeedUnverified;
-  @JsonKey(name: 'bt-stop-timeout')
+  @JsonKey(name: 'bt-stop-timeout', fromJson: IntParser.tryParseIfNotNull)
   final int? btStopTimeout;
-  @JsonKey(name: 'bt-tracker')
+  @JsonKey(name: 'bt-tracker', fromJson: btTrackerParse)
   final List<String>? btTracker;
-  @JsonKey(name: 'bt-tracker-connect-timeout')
+  @JsonKey(
+    name: 'bt-tracker-connect-timeout',
+    fromJson: IntParser.tryParseIfNotNull,
+  )
   final int? btTrackerConnectTimeout;
-  @JsonKey(name: 'bt-tracker-interval')
+  @JsonKey(name: 'bt-tracker-interval', fromJson: IntParser.tryParseIfNotNull)
   final int? btTrackerInterval;
-  @JsonKey(name: 'bt-tracker-timeout')
+  @JsonKey(name: 'bt-tracker-timeout', fromJson: IntParser.tryParseIfNotNull)
   final int? btTrackerTimeout;
-  @JsonKey(name: 'check-integrity')
+  @JsonKey(name: 'check-integrity', fromJson: BoolParser.tryParseIfNotNull)
   final bool? checkIntegrity;
-  @JsonKey(name: 'checksum')
+  @JsonKey(name: 'checksum', toJson: Aria2HashOption.toInput)
   final Aria2HashOption? checksum;
-  @JsonKey(name: 'conditional-get')
+  @JsonKey(name: 'conditional-get', fromJson: BoolParser.tryParseIfNotNull)
   final bool? conditionalGet;
-  @JsonKey(name: 'connect-timeout')
+  @JsonKey(name: 'connect-timeout', fromJson: IntParser.tryParseIfNotNull)
   final int? connectTimeout;
-  @JsonKey(name: 'content-disposition-default-utf8')
+  @JsonKey(
+    name: 'content-disposition-default-utf8',
+    fromJson: BoolParser.tryParseIfNotNull,
+  )
   final bool? contentDispositionDefaultUtf8;
-  @JsonKey(name: 'continue')
+  @JsonKey(name: 'continue', fromJson: BoolParser.tryParseIfNotNull)
   final bool? aria2Continue;
   @JsonKey(name: 'dir')
   final String? dir;
-  @JsonKey(name: 'dry-run')
+  @JsonKey(name: 'dry-run', fromJson: BoolParser.tryParseIfNotNull)
   final bool? dryRun;
-  @JsonKey(name: 'enable-http-keep-alive')
+  @JsonKey(
+    name: 'enable-http-keep-alive',
+    fromJson: BoolParser.tryParseIfNotNull,
+  )
   final bool? enableHttpKeepAlive;
-  @JsonKey(name: 'enable-http-pipelining')
+  @JsonKey(
+    name: 'enable-http-pipelining',
+    fromJson: BoolParser.tryParseIfNotNull,
+  )
   final bool? enableHttpPipelining;
-  @JsonKey(name: 'enable-mmap')
+  @JsonKey(name: 'enable-mmap', fromJson: BoolParser.tryParseIfNotNull)
   final bool? enableMmap;
-  @JsonKey(name: 'enable-peer-exchange')
+  @JsonKey(name: 'enable-peer-exchange', fromJson: BoolParser.tryParseIfNotNull)
   final bool? enablePeerExchange;
   @JsonKey(name: 'file-allocation')
   final Aria2FileAllocationMethod? fileAllocation;
@@ -178,11 +212,11 @@ class Aria2InputFileOption {
   final Aria2Symbol? followMetalink;
   @JsonKey(name: 'follow-torrent')
   final Aria2Symbol? followTorrent;
-  @JsonKey(name: 'force-save')
+  @JsonKey(name: 'force-save', fromJson: BoolParser.tryParseIfNotNull)
   final bool? forceSave;
   @JsonKey(name: 'ftp-passwd')
   final String? ftpPasswd;
-  @JsonKey(name: 'ftp-pasv')
+  @JsonKey(name: 'ftp-pasv', fromJson: BoolParser.tryParseIfNotNull)
   final bool? ftpPasv;
   @JsonKey(name: 'ftp-proxy')
   final String? ftpProxy;
@@ -190,7 +224,7 @@ class Aria2InputFileOption {
   final String? ftpProxyPasswd;
   @JsonKey(name: 'ftp-proxy-user')
   final String? ftpProxyUser;
-  @JsonKey(name: 'ftp-reuse-connection')
+  @JsonKey(name: 'ftp-reuse-connection', fromJson: BoolParser.tryParseIfNotNull)
   final bool? ftpReuseConnection;
   @JsonKey(name: 'ftp-type')
   final Aria2FTPType? ftpType;
@@ -198,15 +232,15 @@ class Aria2InputFileOption {
   final String? ftpUser;
   @JsonKey(name: 'gid')
   final String? gid;
-  @JsonKey(name: 'hash-check-only')
+  @JsonKey(name: 'hash-check-only', fromJson: BoolParser.tryParseIfNotNull)
   final bool? hashCheckOnly;
   @JsonKey(name: 'header')
   final List<String>? header;
-  @JsonKey(name: 'http-accept-gzip')
+  @JsonKey(name: 'http-accept-gzip', fromJson: BoolParser.tryParseIfNotNull)
   final bool? httpAcceptGzip;
-  @JsonKey(name: 'http-auth-challenge')
+  @JsonKey(name: 'http-auth-challenge', fromJson: BoolParser.tryParseIfNotNull)
   final bool? httpAuthChallenge;
-  @JsonKey(name: 'http-no-cache')
+  @JsonKey(name: 'http-no-cache', fromJson: BoolParser.tryParseIfNotNull)
   final bool? httpNoCache;
   @JsonKey(name: 'http-passwd')
   final String? httpPasswd;
@@ -228,23 +262,32 @@ class Aria2InputFileOption {
   final Map<int, String>? indexOut;
   @JsonKey(name: 'lowest-speed-limit')
   final String? lowestSpeedLimit;
-  @JsonKey(name: 'max-connection-per-server')
+  @JsonKey(
+    name: 'max-connection-per-server',
+    fromJson: IntParser.tryParseIfNotNull,
+  )
   final int? maxConnectionPerServer;
   @JsonKey(name: 'max-download-limit')
   final String? maxDownloadLimit;
-  @JsonKey(name: 'max-file-not-found')
+  @JsonKey(name: 'max-file-not-found', fromJson: IntParser.tryParseIfNotNull)
   final int? maxFileNotFound;
   @JsonKey(name: 'max-mmap-limit')
   final String? maxMmapLimit;
-  @JsonKey(name: 'max-resume-failure-tries')
+  @JsonKey(
+    name: 'max-resume-failure-tries',
+    fromJson: IntParser.tryParseIfNotNull,
+  )
   final int? maxResumeFailureTries;
-  @JsonKey(name: 'max-tries')
+  @JsonKey(name: 'max-tries', fromJson: IntParser.tryParseIfNotNull)
   final int? maxTries;
   @JsonKey(name: 'max-upload-limit')
   final String? maxUploadLimit;
   @JsonKey(name: 'metalink-base-uri')
   final String? metalinkBaseUri;
-  @JsonKey(name: 'metalink-enable-unique-protocol')
+  @JsonKey(
+    name: 'metalink-enable-unique-protocol',
+    fromJson: BoolParser.tryParseIfNotNull,
+  )
   final bool? metalinkEnableUniqueProtocol;
   @JsonKey(name: 'metalink-language')
   final String? metalinkLanguage;
@@ -260,53 +303,59 @@ class Aria2InputFileOption {
   final String? minSplitSize;
   @JsonKey(name: 'no-file-allocation-limit')
   final String? noFileAllocationLimit;
-  @JsonKey(name: 'no-netrc')
+  @JsonKey(name: 'no-netrc', fromJson: BoolParser.tryParseIfNotNull)
   final bool? noNetrc;
   @JsonKey(name: 'no-proxy')
   final List<String>? noProxy;
   @JsonKey(name: 'out')
   final String? out;
-  @JsonKey(name: 'parameterized-uri')
+  @JsonKey(name: 'parameterized-uri', fromJson: BoolParser.tryParseIfNotNull)
   final bool? parameterizedUri;
-  @JsonKey(name: 'pause')
+  @JsonKey(name: 'pause', fromJson: BoolParser.tryParseIfNotNull)
   final bool? pause;
-  @JsonKey(name: 'pause-metadata')
+  @JsonKey(name: 'pause-metadata', fromJson: BoolParser.tryParseIfNotNull)
   final bool? pauseMetadata;
   @JsonKey(name: 'piece-length')
   final String? pieceLength;
   @JsonKey(name: 'proxy-method')
   final Aria2ProxyMethod? proxyMethod;
-  @JsonKey(name: 'realtime-chunk-checksum')
+  @JsonKey(
+    name: 'realtime-chunk-checksum',
+    fromJson: BoolParser.tryParseIfNotNull,
+  )
   final bool? realtimeChunkChecksum;
   @JsonKey(name: 'referer')
   final String? referer;
-  @JsonKey(name: 'remote-time')
+  @JsonKey(name: 'remote-time', fromJson: BoolParser.tryParseIfNotNull)
   final bool? remoteTime;
-  @JsonKey(name: 'remove-control-file')
+  @JsonKey(name: 'remove-control-file', fromJson: BoolParser.tryParseIfNotNull)
   final bool? removeControlFile;
-  @JsonKey(name: 'retry-wait')
+  @JsonKey(name: 'retry-wait', fromJson: IntParser.tryParseIfNotNull)
   final int? retryWait;
-  @JsonKey(name: 'reuse-uri')
+  @JsonKey(name: 'reuse-uri', fromJson: BoolParser.tryParseIfNotNull)
   final bool? reuseUri;
-  @JsonKey(name: 'rpc-save-upload-metadata')
+  @JsonKey(
+    name: 'rpc-save-upload-metadata',
+    fromJson: BoolParser.tryParseIfNotNull,
+  )
   final bool? rpcSaveUploadMetadata;
-  @JsonKey(name: 'seed-ratio')
+  @JsonKey(name: 'seed-ratio', fromJson: DoubleParser.tryParseIfNotNull)
   final double? seedRatio;
-  @JsonKey(name: 'seed-time')
+  @JsonKey(name: 'seed-time', fromJson: DoubleParser.tryParseIfNotNull)
   final double? seedTime;
   @JsonKey(name: 'select-file')
   final String? selectFile;
-  @JsonKey(name: 'split')
+  @JsonKey(name: 'split', fromJson: IntParser.tryParseIfNotNull)
   final int? split;
-  @JsonKey(name: 'ssh-host-key-md')
+  @JsonKey(name: 'ssh-host-key-md', toJson: Aria2HashOption.toInput)
   final Aria2HashOption? sshHostKeyMd;
   @JsonKey(name: 'stream-piece-selector')
   final Aria2StreamPieceSelector? streamPieceSelector;
-  @JsonKey(name: 'timeout')
+  @JsonKey(name: 'timeout', fromJson: IntParser.tryParseIfNotNull)
   final int? timeout;
   @JsonKey(name: 'uri-selector')
   final Aria2UriSelector? uriSelector;
-  @JsonKey(name: 'use-head')
+  @JsonKey(name: 'use-head', fromJson: BoolParser.tryParseIfNotNull)
   final bool? useHead;
   @JsonKey(name: 'user-agent')
   final String? userAgent;
@@ -660,6 +709,13 @@ class Aria2InputFileOption {
   }
 
   Map<String, dynamic> toJson() => _$Aria2InputFileOptionToJson(this);
+
+  @override
+  String toString() => toJson().toString();
+
+  static List<String>? btTrackerParse(String? o) {
+    return o?.split(',');
+  }
 }
 
 @JsonSerializable()
@@ -672,13 +728,16 @@ class Aria2HashOption {
   factory Aria2HashOption.fromJson(Map<String, dynamic> json) =>
       _$Aria2HashOptionFromJson(json);
 
-  @override
-  String toString() {
+  String get option {
     return '${type.name}=$digest';
   }
 
   @override
   int get hashCode => Object.hashAll([type, digest]);
+
+  static String? toInput(Aria2HashOption? o) {
+    return o?.option;
+  }
 
   @override
   bool operator ==(Object other) {
@@ -689,6 +748,9 @@ class Aria2HashOption {
   }
 
   Map<String, dynamic> toJson() => _$Aria2HashOptionToJson(this);
+
+  @override
+  String toString() => toJson().toString();
 }
 
 @JsonSerializable()
@@ -719,6 +781,9 @@ class Aria2LinkedServerInfo {
   }
 
   Map<String, dynamic> toJson() => _$Aria2LinkedServerInfoToJson(this);
+
+  @override
+  String toString() => toJson().toString();
 }
 
 /// aria2方法

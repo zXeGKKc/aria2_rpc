@@ -1,4 +1,5 @@
 import 'package:aria2_rpc/src/_internal/consts.dart';
+import 'package:aria2_rpc/src/_internal/extension.dart';
 import 'package:aria2_rpc/src/enum.dart';
 import 'package:aria2_rpc/src/model.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -11,10 +12,14 @@ sealed class Aria2Result {
 
 @JsonSerializable()
 class Aria2DownloadingFile extends Aria2Result {
+  @JsonKey(fromJson: int.parse)
   final int index;
   final String path;
+  @JsonKey(fromJson: int.parse)
   final int length;
+  @JsonKey(fromJson: int.parse)
   final int completedLength;
+  @JsonKey(fromJson: bool.parse)
   final bool selected;
   final List<Aria2DownloadingUri> uris;
 
@@ -47,6 +52,9 @@ class Aria2DownloadingFile extends Aria2Result {
   }
 
   Map<String, dynamic> toJson() => _$Aria2DownloadingFileToJson(this);
+
+  @override
+  String toString() => toJson().toString();
 }
 
 @JsonSerializable()
@@ -103,6 +111,9 @@ class Aria2DownloadingPeer extends Aria2Result {
   }
 
   Map<String, dynamic> toJson() => _$Aria2DownloadingPeerToJson(this);
+
+  @override
+  String toString() => toJson().toString();
 }
 
 @JsonSerializable()
@@ -221,6 +232,9 @@ class Aria2DownloadingStatus extends Aria2Result {
   }
 
   Map<String, dynamic> toJson() => _$Aria2DownloadingStatusToJson(this);
+
+  @override
+  String toString() => toJson().toString();
 }
 
 @JsonSerializable()
@@ -245,35 +259,38 @@ class Aria2DownloadingUri extends Aria2Result {
   }
 
   Map<String, dynamic> toJson() => _$Aria2DownloadingUriToJson(this);
-}
 
-dynamic _fromJson(dynamic value) {
-  final boolean = bool.tryParse(value);
-  if (boolean != null) return boolean;
-  return value.toString();
+  @override
+  String toString() => toJson().toString();
 }
 
 @JsonSerializable(includeIfNull: false)
 class Aria2Option extends Aria2InputFileOption implements Aria2Result {
-  @JsonKey(name: 'bt-max-open-files')
+  @JsonKey(name: 'bt-max-open-files', fromJson: IntParser.tryParseIfNotNull)
   final int? btMaxOpenFiles;
   @JsonKey(name: 'download-result')
   final Aria2DownloadResult? downloadResult;
-  @JsonKey(name: 'keep-unfinished-download-result')
+  @JsonKey(
+    name: 'keep-unfinished-download-result',
+    fromJson: BoolParser.tryParseIfNotNull,
+  )
   final bool? keepUnfinishedDownloadResult;
   @JsonKey(name: 'log')
   final String? log;
   @JsonKey(name: 'log-level')
   final Aria2LogLevel? logLevel;
-  @JsonKey(name: 'max-concurrent-downloads')
+  @JsonKey(
+    name: 'max-concurrent-downloads',
+    fromJson: IntParser.tryParseIfNotNull,
+  )
   final int? maxConcurrentDownloads;
-  @JsonKey(name: 'max-download-result')
+  @JsonKey(name: 'max-download-result', fromJson: IntParser.tryParseIfNotNull)
   final int? maxDownloadResult;
   @JsonKey(name: 'max-overall-download-limit')
   final String? maxOverallDownloadLimit;
   @JsonKey(name: 'max-overall-upload-limit')
   final String? maxOverallUploadLimit;
-  @JsonKey(name: 'optimize-concurrent-downloads', fromJson: _fromJson)
+  @JsonKey(name: 'optimize-concurrent-downloads', fromJson: _optimizeParse)
   final dynamic optimizeConcurrentDownloads;
   @JsonKey(name: 'save-cookies')
   final String? saveCookies;
@@ -576,10 +593,20 @@ class Aria2Option extends Aria2InputFileOption implements Aria2Result {
 
   @override
   Map<String, dynamic> toJson() => _$Aria2OptionToJson(this);
+
+  @override
+  String toString() => toJson().toString();
+
+  static dynamic _optimizeParse(dynamic value) {
+    final boolean = bool.tryParse(value);
+    if (boolean != null) return boolean;
+    return value.toString();
+  }
 }
 
 @JsonSerializable()
 class Aria2LinkedServer extends Aria2Result {
+  @JsonKey(fromJson: int.parse)
   final int index;
   final List<Aria2LinkedServerInfo> servers;
 
@@ -600,6 +627,9 @@ class Aria2LinkedServer extends Aria2Result {
   }
 
   Map<String, dynamic> toJson() => _$Aria2LinkedServerToJson(this);
+
+  @override
+  String toString() => toJson().toString();
 }
 
 @JsonSerializable()
@@ -621,15 +651,24 @@ class Aria2SessionInfo extends Aria2Result {
   }
 
   Map<String, dynamic> toJson() => _$Aria2SessionInfoToJson(this);
+
+  @override
+  String toString() => toJson().toString();
 }
 
 @JsonSerializable()
 class Aria2GlobalStat extends Aria2Result {
+  @JsonKey(fromJson: int.parse)
   final int downloadSpeed;
+  @JsonKey(fromJson: int.parse)
   final int uploadSpeed;
+  @JsonKey(fromJson: int.parse)
   final int numActive;
+  @JsonKey(fromJson: int.parse)
   final int numWaiting;
+  @JsonKey(fromJson: int.parse)
   final int numStopped;
+  @JsonKey(fromJson: int.parse)
   final int numStoppedTotal;
 
   const Aria2GlobalStat({
@@ -667,6 +706,9 @@ class Aria2GlobalStat extends Aria2Result {
   }
 
   Map<String, dynamic> toJson() => _$Aria2GlobalStatToJson(this);
+
+  @override
+  String toString() => toJson().toString();
 }
 
 @JsonSerializable()
@@ -691,6 +733,9 @@ class Aria2Version extends Aria2Result {
   }
 
   Map<String, dynamic> toJson() => _$Aria2VersionToJson(this);
+
+  @override
+  String toString() => toJson().toString();
 }
 
 @JsonSerializable()
@@ -713,6 +758,9 @@ class Aria2Error {
   }
 
   Map<String, dynamic> toJson() => _$Aria2ErrorToJson(this);
+
+  @override
+  String toString() => toJson().toString();
 }
 
 @JsonSerializable()
@@ -734,4 +782,7 @@ class Aria2Notification {
   }
 
   Map<String, dynamic> toJson() => _$Aria2NotificationToJson(this);
+
+  @override
+  String toString() => toJson().toString();
 }

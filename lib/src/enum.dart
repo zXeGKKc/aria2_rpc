@@ -103,15 +103,17 @@ enum Aria2MethodName with AliasEnumMixin {
 
 @JsonEnum(valueField: 'alias')
 enum Aria2NotificationName with AliasEnumMixin {
-  onDownloadStart,
-  onDownloadPause,
-  onDownloadStop,
-  onDownloadComplete,
-  onDownloadError,
-  onBtDownloadComplete;
+  onDownloadStart('aria2.onDownloadStart'),
+  onDownloadPause('aria2.onDownloadPause'),
+  onDownloadStop('aria2.onDownloadStop'),
+  onDownloadComplete('aria2.onDownloadComplete'),
+  onDownloadError('aria2.onDownloadError'),
+  onBtDownloadComplete('aria2.onBtDownloadComplete');
 
   @override
-  String get alias => 'aria2.$name';
+  final String alias;
+
+  const Aria2NotificationName(this.alias);
 }
 
 @JsonEnum(valueField: 'alias')

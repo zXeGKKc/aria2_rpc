@@ -774,7 +774,7 @@ class Aria2WebSocketClient extends Aria2RPCClient {
     if (json.containsKey('id')) {
       final packet = _pending.remove(json['id']);
       if (packet != null) packet.complete(json);
-    } else if (json.containsKey('method')) {
+    } else if (json.containsKey('method') && json.containsKey('params')) {
       try {
         _notificationController.add(Aria2NotificationResponse.fromJson(json));
       } on Exception catch (e) {
