@@ -32,3 +32,7 @@ build/
 
 # FVM Version Cache
 .fvm/
+
+test/tmp/*
+test/metalinks/*
+test/torrents/*

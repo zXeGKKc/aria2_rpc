@@ -16,9 +16,10 @@ You can use this package like this:
 import 'package:aria2_rpc/aria2_rpc.dart';
 
 void main() async {
+  	late final Aria2RPCClient client;
     try{
-        // protocol can be "http" or "websocket"
-        final client = Aria2HttpClient(
+        // Aria2HttpClient or Aria2WebSocketClient
+        client = Aria2HttpClient(
             host: host,
             port: port,
             path: path,
@@ -34,6 +35,8 @@ void main() async {
         //return {"id":"xxx","jsonrpc":"2.0","result":{"downloadSpeed":"0","numActive":"0","numStopped":"34","numStoppedTotal":"36","numWaiting":"0","uploadSpeed":"0"}}
     } catch (e) {
         print(e);
+    } finally {
+      	await client.disconnect();
     }
 }
 ```

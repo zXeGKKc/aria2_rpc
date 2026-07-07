@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:test/test.dart';
 import 'package:path/path.dart' as p;
@@ -14,6 +16,7 @@ const downloadLink = [
   'https://ash-speed.hetzner.com/100MB.bin',
   'https://qqdl.gtimg.cn/qqfile/QQNT/9.9.31/release/092069d7/QQ_9.9.31_260528_x64_01.exe',
 ];
+
 const errorLink = 'https://example.com/file.zip';
 
 final tmpDir = Directory(p.join(Directory.current.path, 'test', 'tmp'))
@@ -72,13 +75,79 @@ void main() async {
       ]);
     });
 
-    test('aria2.addTorrent', () {
-      // TODO: implement
-    }, skip: true);
+    test('aria2.addTorrent', () async {
+      final torrents = <Uint8List>[];
+      await for (final i in Directory(
+        p.join(Directory.current.path, 'test', 'torrents'),
+      ).list().timeout(const Duration(seconds: 5)).take(2)) {
+        if (i is File) {
+          torrents.add(await i.readAsBytes());
+        }
+      }
+
+      await Future.wait([
+        () async {
+          final test = await httpClient.addTorrent(
+            base64Encode(torrents[0]),
+            [],
+            option,
+          );
+          final cleanup = await httpClient.remove(test.result);
+          expect(cleanup.result, equals(test.result));
+
+          final testFailed = httpClient.addTorrent('', null, option);
+          expect(testFailed, throwsA(isA<Aria2ErrorResponse>()));
+        }(),
+        () async {
+          final test = await websocketClient.addTorrent(
+            base64Encode(torrents[1]),
+            [],
+            option,
+          );
+          final cleanup = await websocketClient.remove(test.result);
+          expect(cleanup.result, equals(test.result));
+
+          final testFailed = websocketClient.addTorrent('', null, option);
+          expect(testFailed, throwsA(isA<Aria2ErrorResponse>()));
+        }(),
+      ]);
+    });
 
     test('aria2.addMetalink', () async {
-      // TODO: implement
-    }, skip: true);
+      final metalinks = <Uint8List>[];
+      await for (final i in Directory(
+        p.join(Directory.current.path, 'test', 'metalinks'),
+      ).list().timeout(const Duration(seconds: 5)).take(2)) {
+        if (i is File) {
+          metalinks.add(await i.readAsBytes());
+        }
+      }
+
+      await Future.wait([
+        () async {
+          final test = await httpClient.addMetalink(
+            base64Encode(metalinks[0]),
+            option,
+          );
+          final cleanup = await httpClient.remove(test.result.first);
+          expect(cleanup.result, equals(test.result.first));
+
+          final testFailed = httpClient.addMetalink('', option);
+          expect(testFailed, throwsA(isA<Aria2ErrorResponse>()));
+        }(),
+        () async {
+          final test = await websocketClient.addMetalink(
+            base64Encode(metalinks[1]),
+            option,
+          );
+          final cleanup = await websocketClient.remove(test.result.first);
+          expect(cleanup.result, equals(test.result.first));
+
+          final testFailed = websocketClient.addMetalink('', option);
+          expect(testFailed, throwsA(isA<Aria2ErrorResponse>()));
+        }(),
+      ]);
+    });
 
     test('aria2.remove', () async {
       await Future.wait([
