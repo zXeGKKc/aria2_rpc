@@ -648,6 +648,7 @@ class Aria2WebSocketClient extends Aria2RPCClient {
   final StreamController<Aria2NotificationResponse> _notificationController;
   bool _isChannelInitialized = false;
   late final WebSocketChannel _channel;
+  late final StreamSubscription _subscription;
   final _pending = <String, _Aria2WebSocketPacket>{};
 
   Aria2WebSocketClient.uri({
@@ -681,6 +682,7 @@ class Aria2WebSocketClient extends Aria2RPCClient {
   @override
   Future<void> disconnect({int? code, String? reason}) async {
     if (_isChannelInitialized) {
+      await _subscription.cancel();
       await _channel.sink.close(code, reason);
     }
     if (!_notificationController.isClosed) {
@@ -748,7 +750,7 @@ class Aria2WebSocketClient extends Aria2RPCClient {
     if (!_isChannelInitialized) {
       _channel = WebSocketChannel.connect(uri);
       _isChannelInitialized = true;
-      _channel.stream.listen(
+      _subscription = _channel.stream.listen(
         (rawJson) {
           final json = jsonDecode(rawJson);
           if (json is List) {

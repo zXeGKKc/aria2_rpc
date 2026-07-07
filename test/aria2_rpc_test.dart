@@ -872,5 +872,143 @@ void main() async {
     });
   });
 
-  // TODO: websocket and notification
+  group('test connect', () {
+    test('connect error', () async {
+      final httpClient = Aria2HttpClient(
+        host: '192.168.0.0',
+        func: Aria2HttpFunction.post,
+      );
+      expect(httpClient.getVersion(), throwsException);
+
+      final websocketClient = Aria2WebSocketClient(host: '192.168.0.0');
+      expect(websocketClient.getVersion(), throwsException);
+      await websocketClient.disconnect();
+    });
+  });
+
+  group('test notification', () {
+    late Aria2WebSocketClient client;
+
+    setUp(() {
+      client = Aria2WebSocketClient(host: host, port: port, path: path);
+    });
+
+    tearDown(() async {
+      await client.purgeDownloadResult();
+      await client.disconnect();
+      await tmpDir.list().forEach((e) async => await e.delete(recursive: true));
+    });
+
+    test('aria2.onDownloadStart', () async {
+      final storage = <String>[];
+      final subscription = client.notification.listen((e) {
+        if (e.method == Aria2NotificationName.onDownloadStart) {
+          final list = e.data.map((f) => f.gid).toList();
+          storage.addAll(list);
+        }
+      });
+
+      final test = await client.addUri([downloadLink[0]], option);
+      expect(test.result, isNotNull);
+      await Future.delayed(const Duration(milliseconds: 200));
+      expect(storage, contains(test.result));
+
+      await subscription.cancel();
+      await client.remove(test.result);
+    });
+
+    test('aria2.onDownloadPause', () async {
+      final storage = <String>[];
+      final subscription = client.notification.listen((e) {
+        if (e.method == Aria2NotificationName.onDownloadPause) {
+          final list = e.data.map((f) => f.gid).toList();
+          storage.addAll(list);
+        }
+      });
+
+      final preload = await client.addUri([downloadLink[0]], option);
+      await Future.delayed(const Duration(milliseconds: 200));
+      final test = await client.pause(preload.result);
+      await Future.delayed(const Duration(milliseconds: 200));
+      expect(storage, contains(test.result));
+
+      await subscription.cancel();
+      await client.remove(test.result);
+    });
+
+    test('aria2.onDownloadStop', () async {
+      final storage = <String>[];
+      final subscription = client.notification.listen((e) {
+        if (e.method == Aria2NotificationName.onDownloadStop) {
+          final list = e.data.map((f) => f.gid).toList();
+          storage.addAll(list);
+        }
+      });
+
+      final preload = await client.addUri([downloadLink[0]], option);
+      final test = await client.remove(preload.result);
+      await Future.delayed(const Duration(milliseconds: 200));
+      expect(storage, contains(test.result));
+
+      await subscription.cancel();
+    });
+
+    test('aria2.onDownloadComplete', () async {
+      final completer = Completer<void>();
+      String? gid;
+      final subscription = client.notification.listen((e) {
+        final list = e.data.map((f) => f.gid).toList();
+        if (gid == null || !list.contains(gid)) return;
+        if (e.method == Aria2NotificationName.onDownloadComplete) {
+          if (!completer.isCompleted) completer.complete();
+        } else if (e.method == Aria2NotificationName.onDownloadError) {
+          if (!completer.isCompleted) completer.completeError('Error');
+        }
+      });
+
+      try {
+        final test = await client.addUri([downloadLink[0]], option);
+        gid = test.result;
+
+        await completer.future.timeout(const Duration(seconds: 30));
+      } finally {
+        await subscription.cancel();
+      }
+    });
+
+    test('aria2.onDownloadError', () async {
+      final completer = Completer<void>();
+      String? gid;
+      final subscription = client.notification.listen((e) {
+        final list = e.data.map((f) => f.gid).toList();
+        if (gid == null || !list.contains(gid)) return;
+        if (e.method == Aria2NotificationName.onDownloadError) {
+          if (!completer.isCompleted) completer.complete();
+        } else if (e.method == Aria2NotificationName.onDownloadComplete) {
+          if (!completer.isCompleted) completer.completeError('Not a error');
+        }
+      });
+
+      try {
+        final preload = await client.addUri([downloadLink[0]], option);
+        gid = preload.result;
+        await Future.delayed(delayDuration);
+        final changeUri = await client.changeUri(
+          gid,
+          1,
+          [downloadLink[0], downloadLink[0]],
+          [errorLink],
+        );
+        expect(changeUri.result.length, greaterThanOrEqualTo(2));
+
+        await completer.future.timeout(const Duration(seconds: 30));
+      } finally {
+        await subscription.cancel();
+      }
+    });
+
+    test('aria2.onBtDownloadComplete', () {
+      // TODO: implement
+    }, skip: true);
+  });
 }
