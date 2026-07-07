@@ -1,5 +1,5 @@
 import 'package:aria2_rpc/src/_internal/consts.dart';
-import 'package:aria2_rpc/src/_internal/extension.dart';
+import 'package:aria2_rpc/src/_internal/parse.dart';
 import 'package:aria2_rpc/src/enum.dart';
 import 'package:aria2_rpc/src/model.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -61,12 +61,18 @@ class Aria2DownloadingFile extends Aria2Result {
 class Aria2DownloadingPeer extends Aria2Result {
   final String peerId;
   final String ip;
+  @JsonKey(fromJson: int.parse)
   final int port;
   final String bitfield;
+  @JsonKey(fromJson: bool.parse)
   final bool amChoking;
+  @JsonKey(fromJson: bool.parse)
   final bool peerChoking;
+  @JsonKey(fromJson: int.parse)
   final int downloadSpeed;
+  @JsonKey(fromJson: int.parse)
   final int uploadSpeed;
+  @JsonKey(fromJson: bool.parse)
   final bool seeder;
 
   const Aria2DownloadingPeer({
@@ -120,18 +126,29 @@ class Aria2DownloadingPeer extends Aria2Result {
 class Aria2DownloadingStatus extends Aria2Result {
   final String? gid;
   final Aria2DownloadingStatusStatus? status;
+  @JsonKey(fromJson: IntParser.tryParseIfNotNull)
   final int? totalLength;
+  @JsonKey(fromJson: IntParser.tryParseIfNotNull)
   final int? completedLength;
+  @JsonKey(fromJson: IntParser.tryParseIfNotNull)
   final int? uploadLength;
   final String? bitfield;
+  @JsonKey(fromJson: IntParser.tryParseIfNotNull)
   final int? downloadSpeed;
+  @JsonKey(fromJson: IntParser.tryParseIfNotNull)
   final int? uploadSpeed;
   final String? infoHash;
+  @JsonKey(fromJson: IntParser.tryParseIfNotNull)
   final int? numSeeders;
+  @JsonKey(fromJson: BoolParser.tryParseIfNotNull)
   final bool? seeder;
+  @JsonKey(fromJson: IntParser.tryParseIfNotNull)
   final int? pieceLength;
+  @JsonKey(fromJson: IntParser.tryParseIfNotNull)
   final int? numPieces;
+  @JsonKey(fromJson: IntParser.tryParseIfNotNull)
   final int? connections;
+  @JsonKey(fromJson: IntParser.tryParseIfNotNull)
   final int? errorCode;
   final String? errorMessage;
   final List<String>? followedBy;
@@ -140,7 +157,9 @@ class Aria2DownloadingStatus extends Aria2Result {
   final String? dir;
   final List<Aria2DownloadingFile>? files;
   final Aria2BitTorrentData? bittorrent;
+  @JsonKey(fromJson: IntParser.tryParseIfNotNull)
   final int? verifiedLength;
+  @JsonKey(fromJson: BoolParser.tryParseIfNotNull)
   final bool? verifyIntegrityPending;
 
   const Aria2DownloadingStatus({
@@ -290,7 +309,7 @@ class Aria2Option extends Aria2InputFileOption implements Aria2Result {
   final String? maxOverallDownloadLimit;
   @JsonKey(name: 'max-overall-upload-limit')
   final String? maxOverallUploadLimit;
-  @JsonKey(name: 'optimize-concurrent-downloads', fromJson: _optimizeParse)
+  @JsonKey(name: 'optimize-concurrent-downloads', fromJson: optimizeParse)
   final dynamic optimizeConcurrentDownloads;
   @JsonKey(name: 'save-cookies')
   final String? saveCookies;
@@ -596,12 +615,6 @@ class Aria2Option extends Aria2InputFileOption implements Aria2Result {
 
   @override
   String toString() => toJson().toString();
-
-  static dynamic _optimizeParse(dynamic value) {
-    final boolean = bool.tryParse(value);
-    if (boolean != null) return boolean;
-    return value.toString();
-  }
 }
 
 @JsonSerializable()

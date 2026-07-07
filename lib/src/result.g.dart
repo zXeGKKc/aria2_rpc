@@ -35,13 +35,13 @@ Aria2DownloadingPeer _$Aria2DownloadingPeerFromJson(
 ) => Aria2DownloadingPeer(
   peerId: json['peerId'] as String,
   ip: json['ip'] as String,
-  port: (json['port'] as num).toInt(),
+  port: int.parse(json['port'] as String),
   bitfield: json['bitfield'] as String,
-  amChoking: json['amChoking'] as bool,
-  peerChoking: json['peerChoking'] as bool,
-  downloadSpeed: (json['downloadSpeed'] as num).toInt(),
-  uploadSpeed: (json['uploadSpeed'] as num).toInt(),
-  seeder: json['seeder'] as bool,
+  amChoking: bool.parse(json['amChoking'] as String),
+  peerChoking: bool.parse(json['peerChoking'] as String),
+  downloadSpeed: int.parse(json['downloadSpeed'] as String),
+  uploadSpeed: int.parse(json['uploadSpeed'] as String),
+  seeder: bool.parse(json['seeder'] as String),
 );
 
 Map<String, dynamic> _$Aria2DownloadingPeerToJson(
@@ -66,19 +66,21 @@ Aria2DownloadingStatus _$Aria2DownloadingStatusFromJson(
     _$Aria2DownloadingStatusStatusEnumMap,
     json['status'],
   ),
-  totalLength: (json['totalLength'] as num?)?.toInt(),
-  completedLength: (json['completedLength'] as num?)?.toInt(),
-  uploadLength: (json['uploadLength'] as num?)?.toInt(),
+  totalLength: IntParser.tryParseIfNotNull(json['totalLength'] as String?),
+  completedLength: IntParser.tryParseIfNotNull(
+    json['completedLength'] as String?,
+  ),
+  uploadLength: IntParser.tryParseIfNotNull(json['uploadLength'] as String?),
   bitfield: json['bitfield'] as String?,
-  downloadSpeed: (json['downloadSpeed'] as num?)?.toInt(),
-  uploadSpeed: (json['uploadSpeed'] as num?)?.toInt(),
+  downloadSpeed: IntParser.tryParseIfNotNull(json['downloadSpeed'] as String?),
+  uploadSpeed: IntParser.tryParseIfNotNull(json['uploadSpeed'] as String?),
   infoHash: json['infoHash'] as String?,
-  numSeeders: (json['numSeeders'] as num?)?.toInt(),
-  seeder: json['seeder'] as bool?,
-  pieceLength: (json['pieceLength'] as num?)?.toInt(),
-  numPieces: (json['numPieces'] as num?)?.toInt(),
-  connections: (json['connections'] as num?)?.toInt(),
-  errorCode: (json['errorCode'] as num?)?.toInt(),
+  numSeeders: IntParser.tryParseIfNotNull(json['numSeeders'] as String?),
+  seeder: BoolParser.tryParseIfNotNull(json['seeder'] as String?),
+  pieceLength: IntParser.tryParseIfNotNull(json['pieceLength'] as String?),
+  numPieces: IntParser.tryParseIfNotNull(json['numPieces'] as String?),
+  connections: IntParser.tryParseIfNotNull(json['connections'] as String?),
+  errorCode: IntParser.tryParseIfNotNull(json['errorCode'] as String?),
   errorMessage: json['errorMessage'] as String?,
   followedBy: (json['followedBy'] as List<dynamic>?)
       ?.map((e) => e as String)
@@ -94,8 +96,12 @@ Aria2DownloadingStatus _$Aria2DownloadingStatusFromJson(
       : Aria2BitTorrentData.fromJson(
           json['bittorrent'] as Map<String, dynamic>,
         ),
-  verifiedLength: (json['verifiedLength'] as num?)?.toInt(),
-  verifyIntegrityPending: json['verifyIntegrityPending'] as bool?,
+  verifiedLength: IntParser.tryParseIfNotNull(
+    json['verifiedLength'] as String?,
+  ),
+  verifyIntegrityPending: BoolParser.tryParseIfNotNull(
+    json['verifyIntegrityPending'] as String?,
+  ),
 );
 
 Map<String, dynamic> _$Aria2DownloadingStatusToJson(

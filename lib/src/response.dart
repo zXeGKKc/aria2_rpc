@@ -1,39 +1,11 @@
 import 'package:aria2_rpc/src/_internal/consts.dart';
+import 'package:aria2_rpc/src/_internal/parse.dart';
 import 'package:aria2_rpc/src/enum.dart';
 import 'package:aria2_rpc/src/result.dart';
 import 'package:collection/collection.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'response.g.dart';
-
-T fromResult<T extends Aria2Result>(Aria2MethodName methodName, Object? json) {
-  switch (methodName) {
-    case .getFiles:
-      return Aria2DownloadingFile.fromJson(json as Map<String, dynamic>) as T;
-    case .getUris:
-      return Aria2DownloadingUri.fromJson(json as Map<String, dynamic>) as T;
-    case .getPeers:
-      return Aria2DownloadingPeer.fromJson(json as Map<String, dynamic>) as T;
-    case .getGlobalStat:
-      return Aria2GlobalStat.fromJson(json as Map<String, dynamic>) as T;
-    case .getServers:
-      return Aria2LinkedServer.fromJson(json as Map<String, dynamic>) as T;
-    case .getSessionInfo:
-      return Aria2SessionInfo.fromJson(json as Map<String, dynamic>) as T;
-    case .getVersion:
-      return Aria2Version.fromJson(json as Map<String, dynamic>) as T;
-    case .getOption:
-    case .getGlobalOption:
-      return Aria2Option.fromJson(json as Map<String, dynamic>) as T;
-    case .tellStatus:
-    case .tellActive:
-    case .tellWaiting:
-    case .tellStopped:
-      return Aria2DownloadingStatus.fromJson(json as Map<String, dynamic>) as T;
-    case _:
-      throw Exception('Invalid method name: $methodName');
-  }
-}
 
 @JsonSerializable()
 class Aria2StringResponse {
@@ -109,8 +81,10 @@ class Aria2ResultListResponse<T extends Aria2Result> {
   factory Aria2ResultListResponse.fromJson(
     Aria2MethodName methodName,
     Map<String, dynamic> json,
-  ) =>
-      _$Aria2ResultListResponseFromJson(json, (e) => fromResult(methodName, e));
+  ) => _$Aria2ResultListResponseFromJson(
+    json,
+    (e) => resultParse(methodName, e),
+  );
 
   Map<String, dynamic> toJson() =>
       _$Aria2ResultListResponseToJson(this, _toJson);
@@ -141,7 +115,7 @@ class Aria2ResultResponse<T extends Aria2Result> {
   factory Aria2ResultResponse.fromJson(
     Aria2MethodName methodName,
     Map<String, dynamic> json,
-  ) => _$Aria2ResultResponseFromJson(json, (e) => fromResult(methodName, e));
+  ) => _$Aria2ResultResponseFromJson(json, (e) => resultParse(methodName, e));
 
   Map<String, dynamic> toJson() => _$Aria2ResultResponseToJson(this, _toResult);
 
@@ -240,7 +214,7 @@ class Aria2MulticallResponse {
               case .getVersion:
               case .getSessionInfo:
               case .getGlobalStat:
-                multiResult.add(fromResult(methodName, (value as List).first));
+                multiResult.add(resultParse(methodName, (value as List).first));
                 break;
               case .getPeers:
               case .getUris:
@@ -251,7 +225,7 @@ class Aria2MulticallResponse {
               case .tellStopped:
                 final e = (value as List).first as List;
                 multiResult.add(
-                  e.map((f) => fromResult(methodName, f)).toList(),
+                  e.map((f) => resultParse(methodName, f)).toList(),
                 );
                 break;
               case .multicall:

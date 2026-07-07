@@ -1,8 +1,6 @@
 import 'package:aria2_rpc/src/_internal/mixin.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-enum Aria2RPCProtocol { http, websocket }
-
 enum Aria2BitTorrentMode { single, multi }
 
 enum Aria2BtCryptoLevel { plain, arc4 }

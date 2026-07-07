@@ -1,7 +1,7 @@
 import 'dart:collection';
 
 import 'package:aria2_rpc/src/_internal/consts.dart';
-import 'package:aria2_rpc/src/_internal/extension.dart';
+import 'package:aria2_rpc/src/_internal/parse.dart';
 import 'package:aria2_rpc/src/enum.dart';
 import 'package:json_annotation/json_annotation.dart';
 

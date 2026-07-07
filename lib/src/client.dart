@@ -512,6 +512,8 @@ class Aria2HttpClient extends Aria2RPCClient {
 
   @override
   Future<Aria2BatchcallResponse> batchcall(List<Aria2Method> methods) async {
+    assert(methods.isNotEmpty);
+
     final Map<String, Aria2Method> pending = {};
     final List<Map<String, dynamic>> requests = [];
     for (final method in methods) {
@@ -564,6 +566,8 @@ class Aria2HttpClient extends Aria2RPCClient {
 
   @override
   Future<Aria2MulticallResponse> multicall(List<Aria2Method> methods) async {
+    assert(methods.isNotEmpty);
+
     final id = _uuid.v4();
     final request = _buildMulticallRequest(id, methods);
 
@@ -695,6 +699,8 @@ class Aria2WebSocketClient extends Aria2RPCClient {
 
   @override
   Future<Aria2BatchcallResponse> batchcall(List<Aria2Method> methods) async {
+    assert(methods.isNotEmpty);
+
     _buildChannel();
     await _channel.ready;
 
@@ -731,6 +737,8 @@ class Aria2WebSocketClient extends Aria2RPCClient {
 
   @override
   Future<Aria2MulticallResponse> multicall(List<Aria2Method> methods) async {
+    assert(methods.isNotEmpty);
+
     _buildChannel();
     await _channel.ready;
 
