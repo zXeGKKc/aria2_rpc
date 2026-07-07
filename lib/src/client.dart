@@ -500,11 +500,11 @@ class Aria2HttpClient extends Aria2RPCClient {
     required String host,
     int? port,
     String? path,
-    bool ssl = false,
+    bool tls = false,
     required this.func,
     this.secret,
   }) : uri = Uri(
-         scheme: ssl ? 'https' : 'http',
+         scheme: tls ? 'https' : 'http',
          host: host,
          port: port,
          path: path,
@@ -650,15 +650,23 @@ class Aria2WebSocketClient extends Aria2RPCClient {
   late final WebSocketChannel _channel;
   final _pending = <String, _Aria2WebSocketPacket>{};
 
+  Aria2WebSocketClient.uri({
+    required this.uri,
+    this.secret,
+    bool broadcastNotification = true,
+  }) : _notificationController = broadcastNotification
+           ? StreamController.broadcast()
+           : StreamController();
+
   Aria2WebSocketClient({
     required String host,
     int? port,
     String? path,
-    bool ssl = false,
+    bool tls = false,
     this.secret,
     bool broadcastNotification = true,
   }) : uri = Uri(
-         scheme: ssl ? 'wss' : 'ws',
+         scheme: tls ? 'wss' : 'ws',
          host: host,
          port: port,
          path: path,
