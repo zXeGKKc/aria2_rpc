@@ -30,9 +30,9 @@ sealed class Aria2RPCClient {
     }());
     final params = <dynamic>[uris];
     if (position != null) {
-      params.add(options ?? Aria2InputFileOption());
+      params.add(options?.toJson() ?? Aria2InputFileOption().toJson());
     } else {
-      if (options != null) params.add(options);
+      if (options != null) params.add(options.toJson());
     }
     if (position != null) params.add(position);
 
@@ -63,9 +63,9 @@ sealed class Aria2RPCClient {
       if (uris != null) params.add(uris);
     }
     if (position != null) {
-      params.add(options ?? Aria2InputFileOption());
+      params.add(options?.toJson() ?? Aria2InputFileOption().toJson());
     } else {
-      if (options != null) params.add(options);
+      if (options != null) params.add(options.toJson());
     }
     if (position != null) params.add(position);
 
@@ -101,9 +101,9 @@ sealed class Aria2RPCClient {
     }());
     final params = <dynamic>[base64Metalink];
     if (position != null) {
-      params.add(options ?? Aria2InputFileOption());
+      params.add(options?.toJson() ?? Aria2InputFileOption().toJson());
     } else {
-      if (options != null) params.add(options);
+      if (options != null) params.add(options.toJson());
     }
     if (position != null) params.add(position);
 
