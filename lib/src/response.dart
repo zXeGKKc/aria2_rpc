@@ -162,7 +162,9 @@ class Aria2ErrorResponse implements Exception {
   Map<String, dynamic> toJson() => _$Aria2ErrorResponseToJson(this);
 
   @override
-  String toString() => toJson().toString();
+  String toString() {
+    return {'id': id, 'aria2Error': aria2Error, 'error': error}.toString();
+  }
 }
 
 @JsonSerializable(createFactory: false)
