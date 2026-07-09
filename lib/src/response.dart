@@ -136,15 +136,28 @@ class Aria2ResultResponse<T extends Aria2Result> {
   String toString() => toJson().toString();
 }
 
-@JsonSerializable()
+@JsonSerializable(createFactory: false)
 class Aria2ErrorResponse implements Exception {
   final String? id;
-  final Aria2Error? error;
+  @JsonKey(name: 'error')
+  final Aria2Error? aria2Error;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final Object? error;
 
-  const Aria2ErrorResponse({this.id, this.error});
+  const Aria2ErrorResponse({this.id, this.aria2Error, this.error});
 
-  factory Aria2ErrorResponse.fromJson(Map<String, dynamic> json) =>
-      _$Aria2ErrorResponseFromJson(json);
+  factory Aria2ErrorResponse.fromJson(
+    Map<String, dynamic> json, [
+    Object? error,
+  ]) {
+    return Aria2ErrorResponse(
+      id: json['id'] as String?,
+      aria2Error: json['error'] == null
+          ? null
+          : Aria2Error.fromJson(json['error'] as Map<String, dynamic>),
+      error: error,
+    );
+  }
 
   Map<String, dynamic> toJson() => _$Aria2ErrorResponseToJson(this);
 

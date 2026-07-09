@@ -79,16 +79,8 @@ Map<String, dynamic> _$Aria2ResultResponseToJson<T extends Aria2Result>(
   Object? Function(T value) toJsonT,
 ) => <String, dynamic>{'id': instance.id, 'result': toJsonT(instance.result)};
 
-Aria2ErrorResponse _$Aria2ErrorResponseFromJson(Map<String, dynamic> json) =>
-    Aria2ErrorResponse(
-      id: json['id'] as String?,
-      error: json['error'] == null
-          ? null
-          : Aria2Error.fromJson(json['error'] as Map<String, dynamic>),
-    );
-
 Map<String, dynamic> _$Aria2ErrorResponseToJson(Aria2ErrorResponse instance) =>
-    <String, dynamic>{'id': instance.id, 'error': instance.error};
+    <String, dynamic>{'id': instance.id, 'error': instance.aria2Error};
 
 Map<String, dynamic> _$Aria2MulticallResponseToJson(
   Aria2MulticallResponse instance,

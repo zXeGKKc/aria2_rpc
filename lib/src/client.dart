@@ -21,20 +21,26 @@ sealed class Aria2RPCClient {
   /// 添加下载链接
   Future<Aria2StringResponse> addUri(
     List<String> uris, [
-    Aria2InputFileOption? option,
+    Aria2InputFileOption? options,
     int? position,
   ]) {
     assert(() {
       if (position != null) return position >= 0;
       return true;
     }());
-    return call(
-      Aria2Method(.addUri, [uris, ?(option?.toJson()), ?position]),
-    ).then((json) {
-      if (json.containsKey('result')) {
+    final params = <dynamic>[uris];
+    if (position != null) {
+      params.add(options ?? Aria2InputFileOption());
+    } else {
+      if (options != null) params.add(options);
+    }
+    if (position != null) params.add(position);
+
+    return call(Aria2Method(.addUri, params)).then((json) {
+      try {
         return Aria2StringResponse.fromJson(json);
-      } else {
-        throw Aria2ErrorResponse.fromJson(json);
+      } catch (e) {
+        throw Aria2ErrorResponse.fromJson(json, e);
       }
     });
   }
@@ -43,25 +49,31 @@ sealed class Aria2RPCClient {
   Future<Aria2StringResponse> addTorrent(
     String base64Torrent, [
     List<String>? uris,
-    Aria2InputFileOption? option,
+    Aria2InputFileOption? options,
     int? position,
   ]) {
     assert(() {
       if (position != null) return position >= 0;
       return true;
     }());
-    return call(
-      Aria2Method(.addTorrent, [
-        base64Torrent,
-        ?uris,
-        ?(option?.toJson()),
-        ?position,
-      ]),
-    ).then((json) {
-      if (json.containsKey('result')) {
+    final params = <dynamic>[base64Torrent];
+    if (options != null || position != null) {
+      params.add(uris ?? []);
+    } else {
+      if (uris != null) params.add(uris);
+    }
+    if (position != null) {
+      params.add(options ?? Aria2InputFileOption());
+    } else {
+      if (options != null) params.add(options);
+    }
+    if (position != null) params.add(position);
+
+    return call(Aria2Method(.addTorrent, params)).then((json) {
+      try {
         return Aria2StringResponse.fromJson(json);
-      } else {
-        throw Aria2ErrorResponse.fromJson(json);
+      } catch (e) {
+        throw Aria2ErrorResponse.fromJson(json, e);
       }
     });
   }
@@ -69,10 +81,10 @@ sealed class Aria2RPCClient {
   /// 获取下载任务中活动的节点
   Future<Aria2ResultListResponse<Aria2DownloadingPeer>> getPeers(String gid) {
     return call(Aria2Method(.getPeers, [gid])).then((json) {
-      if (json.containsKey('result')) {
+      try {
         return Aria2ResultListResponse.fromJson(.getPeers, json);
-      } else {
-        throw Aria2ErrorResponse.fromJson(json);
+      } catch (e) {
+        throw Aria2ErrorResponse.fromJson(json, e);
       }
     });
   }
@@ -80,24 +92,26 @@ sealed class Aria2RPCClient {
   /// 添加metalink
   Future<Aria2StringListResponse> addMetalink(
     String base64Metalink, [
-    Aria2InputFileOption? option,
+    Aria2InputFileOption? options,
     int? position,
   ]) {
     assert(() {
       if (position != null) return position >= 0;
       return true;
     }());
-    return call(
-      Aria2Method(.addMetalink, [
-        base64Metalink,
-        ?(option?.toJson()),
-        ?position,
-      ]),
-    ).then((json) {
-      if (json.containsKey('result')) {
+    final params = <dynamic>[base64Metalink];
+    if (position != null) {
+      params.add(options ?? Aria2InputFileOption());
+    } else {
+      if (options != null) params.add(options);
+    }
+    if (position != null) params.add(position);
+
+    return call(Aria2Method(.addMetalink, params)).then((json) {
+      try {
         return Aria2StringListResponse.fromJson(json);
-      } else {
-        throw Aria2ErrorResponse.fromJson(json);
+      } catch (e) {
+        throw Aria2ErrorResponse.fromJson(json, e);
       }
     });
   }
@@ -105,10 +119,10 @@ sealed class Aria2RPCClient {
   /// 删除下载任务
   Future<Aria2StringResponse> remove(String gid) {
     return call(Aria2Method(.remove, [gid])).then((json) {
-      if (json.containsKey('result')) {
+      try {
         return Aria2StringResponse.fromJson(json);
-      } else {
-        throw Aria2ErrorResponse.fromJson(json);
+      } catch (e) {
+        throw Aria2ErrorResponse.fromJson(json, e);
       }
     });
   }
@@ -116,10 +130,10 @@ sealed class Aria2RPCClient {
   /// 暂停下载
   Future<Aria2StringResponse> pause(String gid) {
     return call(Aria2Method(.pause, [gid])).then((json) {
-      if (json.containsKey('result')) {
+      try {
         return Aria2StringResponse.fromJson(json);
-      } else {
-        throw Aria2ErrorResponse.fromJson(json);
+      } catch (e) {
+        throw Aria2ErrorResponse.fromJson(json, e);
       }
     });
   }
@@ -127,10 +141,10 @@ sealed class Aria2RPCClient {
   /// 强制暂停，不通知trackers自己下线
   Future<Aria2StringResponse> forcePause(String gid) {
     return call(Aria2Method(.forcePause, [gid])).then((json) {
-      if (json.containsKey('result')) {
+      try {
         return Aria2StringResponse.fromJson(json);
-      } else {
-        throw Aria2ErrorResponse.fromJson(json);
+      } catch (e) {
+        throw Aria2ErrorResponse.fromJson(json, e);
       }
     });
   }
@@ -138,10 +152,10 @@ sealed class Aria2RPCClient {
   /// 暂停所有
   Future<Aria2StringResponse> pauseAll() {
     return call(Aria2Method(.pauseAll)).then((json) {
-      if (json.containsKey('result')) {
+      try {
         return Aria2StringResponse.fromJson(json);
-      } else {
-        throw Aria2ErrorResponse.fromJson(json);
+      } catch (e) {
+        throw Aria2ErrorResponse.fromJson(json, e);
       }
     });
   }
@@ -149,10 +163,10 @@ sealed class Aria2RPCClient {
   /// 强制暂停所有
   Future<Aria2StringResponse> forcePauseAll() {
     return call(Aria2Method(.forcePauseAll)).then((json) {
-      if (json.containsKey('result')) {
+      try {
         return Aria2StringResponse.fromJson(json);
-      } else {
-        throw Aria2ErrorResponse.fromJson(json);
+      } catch (e) {
+        throw Aria2ErrorResponse.fromJson(json, e);
       }
     });
   }
@@ -160,10 +174,10 @@ sealed class Aria2RPCClient {
   /// 恢复下载
   Future<Aria2StringResponse> unpause(String gid) {
     return call(Aria2Method(.unpause, [gid])).then((json) {
-      if (json.containsKey('result')) {
+      try {
         return Aria2StringResponse.fromJson(json);
-      } else {
-        throw Aria2ErrorResponse.fromJson(json);
+      } catch (e) {
+        throw Aria2ErrorResponse.fromJson(json, e);
       }
     });
   }
@@ -171,10 +185,10 @@ sealed class Aria2RPCClient {
   /// 恢复所有下载
   Future<Aria2StringResponse> unpauseAll() {
     return call(Aria2Method(.unpauseAll)).then((json) {
-      if (json.containsKey('result')) {
+      try {
         return Aria2StringResponse.fromJson(json);
-      } else {
-        throw Aria2ErrorResponse.fromJson(json);
+      } catch (e) {
+        throw Aria2ErrorResponse.fromJson(json, e);
       }
     });
   }
@@ -182,10 +196,10 @@ sealed class Aria2RPCClient {
   /// 强制删除，不通知trackers自己下线
   Future<Aria2StringResponse> forceRemove(String gid) {
     return call(Aria2Method(.forceRemove, [gid])).then((json) {
-      if (json.containsKey('result')) {
+      try {
         return Aria2StringResponse.fromJson(json);
-      } else {
-        throw Aria2ErrorResponse.fromJson(json);
+      } catch (e) {
+        throw Aria2ErrorResponse.fromJson(json, e);
       }
     });
   }
@@ -199,10 +213,10 @@ sealed class Aria2RPCClient {
     return call(Aria2Method(.changePosition, [gid, pos, how.alias])).then((
       json,
     ) {
-      if (json.containsKey('result')) {
+      try {
         return Aria2IntResponse.fromJson(json);
-      } else {
-        throw Aria2ErrorResponse.fromJson(json);
+      } catch (e) {
+        throw Aria2ErrorResponse.fromJson(json, e);
       }
     });
   }
@@ -213,10 +227,10 @@ sealed class Aria2RPCClient {
     Aria2StatusKeys? keys,
   ]) {
     return call(Aria2Method(.tellStatus, [gid, ?keys])).then((json) {
-      if (json.containsKey('result')) {
+      try {
         return Aria2ResultResponse.fromJson(.tellStatus, json);
-      } else {
-        throw Aria2ErrorResponse.fromJson(json);
+      } catch (e) {
+        throw Aria2ErrorResponse.fromJson(json, e);
       }
     });
   }
@@ -224,10 +238,10 @@ sealed class Aria2RPCClient {
   /// 获取任务的下载链接
   Future<Aria2ResultListResponse<Aria2DownloadingUri>> getUris(String gid) {
     return call(Aria2Method(.getUris, [gid])).then((json) {
-      if (json.containsKey('result')) {
+      try {
         return Aria2ResultListResponse.fromJson(.getUris, json);
-      } else {
-        throw Aria2ErrorResponse.fromJson(json);
+      } catch (e) {
+        throw Aria2ErrorResponse.fromJson(json, e);
       }
     });
   }
@@ -235,10 +249,10 @@ sealed class Aria2RPCClient {
   /// 获取任务下载文件列表
   Future<Aria2ResultListResponse<Aria2DownloadingFile>> getFiles(String gid) {
     return call(Aria2Method(.getFiles, [gid])).then((json) {
-      if (json.containsKey('result')) {
+      try {
         return Aria2ResultListResponse.fromJson(.getFiles, json);
-      } else {
-        throw Aria2ErrorResponse.fromJson(json);
+      } catch (e) {
+        throw Aria2ErrorResponse.fromJson(json, e);
       }
     });
   }
@@ -246,10 +260,10 @@ sealed class Aria2RPCClient {
   /// 下载任务连接的服务器地址,及下载速度
   Future<Aria2ResultListResponse<Aria2LinkedServer>> getServers(String gid) {
     return call(Aria2Method(.getServers, [gid])).then((json) {
-      if (json.containsKey('result')) {
+      try {
         return Aria2ResultListResponse.fromJson(.getServers, json);
-      } else {
-        throw Aria2ErrorResponse.fromJson(json);
+      } catch (e) {
+        throw Aria2ErrorResponse.fromJson(json, e);
       }
     });
   }
@@ -259,10 +273,10 @@ sealed class Aria2RPCClient {
     Aria2StatusKeys? keys,
   ]) {
     return call(Aria2Method(.tellActive, [?keys])).then((json) {
-      if (json.containsKey('result')) {
+      try {
         return Aria2ResultListResponse.fromJson(.tellActive, json);
-      } else {
-        throw Aria2ErrorResponse.fromJson(json);
+      } catch (e) {
+        throw Aria2ErrorResponse.fromJson(json, e);
       }
     });
   }
@@ -276,10 +290,10 @@ sealed class Aria2RPCClient {
     return call(Aria2Method(.tellWaiting, [offset, number, ?keys])).then((
       json,
     ) {
-      if (json.containsKey('result')) {
+      try {
         return Aria2ResultListResponse.fromJson(.tellWaiting, json);
-      } else {
-        throw Aria2ErrorResponse.fromJson(json);
+      } catch (e) {
+        throw Aria2ErrorResponse.fromJson(json, e);
       }
     });
   }
@@ -293,10 +307,10 @@ sealed class Aria2RPCClient {
     return call(Aria2Method(.tellStopped, [offset, number, ?keys])).then((
       json,
     ) {
-      if (json.containsKey('result')) {
+      try {
         return Aria2ResultListResponse.fromJson(.tellStopped, json);
-      } else {
-        throw Aria2ErrorResponse.fromJson(json);
+      } catch (e) {
+        throw Aria2ErrorResponse.fromJson(json, e);
       }
     });
   }
@@ -304,10 +318,10 @@ sealed class Aria2RPCClient {
   /// 获取任务配置
   Future<Aria2ResultResponse<Aria2Option>> getOption(String gid) {
     return call(Aria2Method(.getOption, [gid])).then((json) {
-      if (json.containsKey('result')) {
+      try {
         return Aria2ResultResponse.fromJson(.getOption, json);
-      } else {
-        throw Aria2ErrorResponse.fromJson(json);
+      } catch (e) {
+        throw Aria2ErrorResponse.fromJson(json, e);
       }
     });
   }
@@ -320,26 +334,31 @@ sealed class Aria2RPCClient {
     List<String> addUris, [
     int? position,
   ]) {
+    assert(fileIndex >= 1);
+    assert(() {
+      if (position != null) return position >= 0;
+      return true;
+    }());
     return call(
       Aria2Method(.changeUri, [gid, fileIndex, delUris, addUris, ?position]),
     ).then((json) {
-      if (json.containsKey('result')) {
+      try {
         return Aria2IntListResponse.fromJson(json);
-      } else {
-        throw Aria2ErrorResponse.fromJson(json);
+      } catch (e) {
+        throw Aria2ErrorResponse.fromJson(json, e);
       }
     });
   }
 
   /// 修改任务配置，部分参数修改完任务重启
-  Future<Aria2StringResponse> changeOption(String gid, Aria2Option option) {
-    return call(Aria2Method(.changeOption, [gid, option.toJson()])).then((
+  Future<Aria2StringResponse> changeOption(String gid, Aria2Option options) {
+    return call(Aria2Method(.changeOption, [gid, options.toJson()])).then((
       json,
     ) {
-      if (json.containsKey('result')) {
+      try {
         return Aria2StringResponse.fromJson(json);
-      } else {
-        throw Aria2ErrorResponse.fromJson(json);
+      } catch (e) {
+        throw Aria2ErrorResponse.fromJson(json, e);
       }
     });
   }
@@ -347,23 +366,23 @@ sealed class Aria2RPCClient {
   /// 获取全局配置
   Future<Aria2ResultResponse<Aria2Option>> getGlobalOption() {
     return call(Aria2Method(.getGlobalOption)).then((json) {
-      if (json.containsKey('result')) {
+      try {
         return Aria2ResultResponse.fromJson(.getGlobalOption, json);
-      } else {
-        throw Aria2ErrorResponse.fromJson(json);
+      } catch (e) {
+        throw Aria2ErrorResponse.fromJson(json, e);
       }
     });
   }
 
   /// 修改全局配置
-  Future<Aria2StringResponse> changeGlobalOption(Aria2Option option) {
-    return call(Aria2Method(.changeGlobalOption, [option.toJson()])).then((
+  Future<Aria2StringResponse> changeGlobalOption(Aria2Option options) {
+    return call(Aria2Method(.changeGlobalOption, [options.toJson()])).then((
       json,
     ) {
-      if (json.containsKey('result')) {
+      try {
         return Aria2StringResponse.fromJson(json);
-      } else {
-        throw Aria2ErrorResponse.fromJson(json);
+      } catch (e) {
+        throw Aria2ErrorResponse.fromJson(json, e);
       }
     });
   }
@@ -371,10 +390,10 @@ sealed class Aria2RPCClient {
   /// 清除所有完成/报错/删除的任务信息
   Future<Aria2StringResponse> purgeDownloadResult() {
     return call(Aria2Method(.purgeDownloadResult)).then((json) {
-      if (json.containsKey('result')) {
+      try {
         return Aria2StringResponse.fromJson(json);
-      } else {
-        throw Aria2ErrorResponse.fromJson(json);
+      } catch (e) {
+        throw Aria2ErrorResponse.fromJson(json, e);
       }
     });
   }
@@ -382,10 +401,10 @@ sealed class Aria2RPCClient {
   /// 清除指定完成/报错/删除的任务信息
   Future<Aria2StringResponse> removeDownloadResult(String gid) {
     return call(Aria2Method(.removeDownloadResult, [gid])).then((json) {
-      if (json.containsKey('result')) {
+      try {
         return Aria2StringResponse.fromJson(json);
-      } else {
-        throw Aria2ErrorResponse.fromJson(json);
+      } catch (e) {
+        throw Aria2ErrorResponse.fromJson(json, e);
       }
     });
   }
@@ -393,10 +412,10 @@ sealed class Aria2RPCClient {
   ///获取版本信息
   Future<Aria2ResultResponse<Aria2Version>> getVersion() {
     return call(Aria2Method(.getVersion)).then((json) {
-      if (json.containsKey('result')) {
+      try {
         return Aria2ResultResponse.fromJson(.getVersion, json);
-      } else {
-        throw Aria2ErrorResponse.fromJson(json);
+      } catch (e) {
+        throw Aria2ErrorResponse.fromJson(json, e);
       }
     });
   }
@@ -404,10 +423,10 @@ sealed class Aria2RPCClient {
   /// 获取当前连接的sessionID
   Future<Aria2ResultResponse<Aria2SessionInfo>> getSessionInfo() {
     return call(Aria2Method(.getSessionInfo)).then((json) {
-      if (json.containsKey('result')) {
+      try {
         return Aria2ResultResponse.fromJson(.getSessionInfo, json);
-      } else {
-        throw Aria2ErrorResponse.fromJson(json);
+      } catch (e) {
+        throw Aria2ErrorResponse.fromJson(json, e);
       }
     });
   }
@@ -415,10 +434,10 @@ sealed class Aria2RPCClient {
   /// 关闭aria2
   Future<Aria2StringResponse> shutdown() {
     return call(Aria2Method(.shutdown)).then((json) {
-      if (json.containsKey('result')) {
+      try {
         return Aria2StringResponse.fromJson(json);
-      } else {
-        throw Aria2ErrorResponse.fromJson(json);
+      } catch (e) {
+        throw Aria2ErrorResponse.fromJson(json, e);
       }
     });
   }
@@ -426,10 +445,10 @@ sealed class Aria2RPCClient {
   /// 强制关闭aria2
   Future<Aria2StringResponse> forceShutdown() {
     return call(Aria2Method(.forceShutdown)).then((json) {
-      if (json.containsKey('result')) {
+      try {
         return Aria2StringResponse.fromJson(json);
-      } else {
-        throw Aria2ErrorResponse.fromJson(json);
+      } catch (e) {
+        throw Aria2ErrorResponse.fromJson(json, e);
       }
     });
   }
@@ -437,10 +456,10 @@ sealed class Aria2RPCClient {
   /// 获取全局状态
   Future<Aria2ResultResponse<Aria2GlobalStat>> getGlobalStat() {
     return call(Aria2Method(.getGlobalStat)).then((json) {
-      if (json.containsKey('result')) {
+      try {
         return Aria2ResultResponse.fromJson(.getGlobalStat, json);
-      } else {
-        throw Aria2ErrorResponse.fromJson(json);
+      } catch (e) {
+        throw Aria2ErrorResponse.fromJson(json, e);
       }
     });
   }
@@ -448,10 +467,10 @@ sealed class Aria2RPCClient {
   /// 保存session内容到文件，并写入服务器
   Future<Aria2StringResponse> saveSession() {
     return call(Aria2Method(.saveSession)).then((json) {
-      if (json.containsKey('result')) {
+      try {
         return Aria2StringResponse.fromJson(json);
-      } else {
-        throw Aria2ErrorResponse.fromJson(json);
+      } catch (e) {
+        throw Aria2ErrorResponse.fromJson(json, e);
       }
     });
   }
@@ -459,20 +478,20 @@ sealed class Aria2RPCClient {
   /// 罗列方法
   Future<Aria2StringListResponse> listMethods() =>
       call(Aria2Method(.listNotifications)).then((json) {
-        if (json.containsKey('result')) {
+        try {
           return Aria2StringListResponse.fromJson(json);
-        } else {
-          throw Aria2ErrorResponse.fromJson(json);
+        } catch (e) {
+          throw Aria2ErrorResponse.fromJson(json, e);
         }
       });
 
   /// 罗列通知触发函数
   Future<Aria2StringListResponse> listNotifications() =>
       call(Aria2Method(.listNotifications)).then((json) {
-        if (json.containsKey('result')) {
+        try {
           return Aria2StringListResponse.fromJson(json);
-        } else {
-          throw Aria2ErrorResponse.fromJson(json);
+        } catch (e) {
+          throw Aria2ErrorResponse.fromJson(json, e);
         }
       });
 
@@ -511,8 +530,14 @@ class Aria2HttpClient extends Aria2RPCClient {
        );
 
   @override
+  Future<void> disconnect() async {
+    _client.close();
+  }
+
+  @override
   Future<Aria2BatchcallResponse> batchcall(List<Aria2Method> methods) async {
     assert(methods.isNotEmpty);
+    assert(methods.every((t) => t.methodName != .multicall));
 
     final Map<String, Aria2Method> pending = {};
     final List<Map<String, dynamic>> requests = [];
@@ -567,6 +592,7 @@ class Aria2HttpClient extends Aria2RPCClient {
   @override
   Future<Aria2MulticallResponse> multicall(List<Aria2Method> methods) async {
     assert(methods.isNotEmpty);
+    assert(methods.every((t) => t.methodName != .multicall));
 
     final id = _uuid.v4();
     final request = _buildMulticallRequest(id, methods);
@@ -700,6 +726,7 @@ class Aria2WebSocketClient extends Aria2RPCClient {
   @override
   Future<Aria2BatchcallResponse> batchcall(List<Aria2Method> methods) async {
     assert(methods.isNotEmpty);
+    assert(methods.every((t) => t.methodName != .multicall));
 
     _buildChannel();
     await _channel.ready;
@@ -738,6 +765,7 @@ class Aria2WebSocketClient extends Aria2RPCClient {
   @override
   Future<Aria2MulticallResponse> multicall(List<Aria2Method> methods) async {
     assert(methods.isNotEmpty);
+    assert(methods.every((t) => t.methodName != .multicall));
 
     _buildChannel();
     await _channel.ready;
@@ -771,8 +799,8 @@ class Aria2WebSocketClient extends Aria2RPCClient {
             _handleCall(json);
           }
         },
-        onError: (o) {
-          _cleanUpPending(o);
+        onError: (e) {
+          _cleanUpPending(e);
         },
         onDone: () => _cleanUpPending(
           WebSocketChannelException.from(const SocketException.closed()),
@@ -790,8 +818,7 @@ class Aria2WebSocketClient extends Aria2RPCClient {
 
   void _handleCall(Map<String, dynamic> json) {
     if (json.containsKey('id')) {
-      final packet = _pending.remove(json['id']);
-      if (packet != null) packet.complete(json);
+      _pending.remove(json['id'])?.complete(json);
     } else if (json.containsKey('method') && json.containsKey('params')) {
       try {
         _notificationController.add(Aria2NotificationResponse.fromJson(json));
