@@ -33,7 +33,7 @@ void main() async {
         host: host,
         port: port,
         path: path,
-        func: Aria2HttpFunction.post,
+        httpMethod: Aria2HttpMethod.post,
       );
 
       websocketClient = Aria2WebSocketClient(
@@ -945,7 +945,7 @@ void main() async {
     test('connect error', () async {
       final httpClient = Aria2HttpClient(
         host: '192.168.0.0',
-        func: Aria2HttpFunction.post,
+        httpMethod: Aria2HttpMethod.post,
       );
       expect(httpClient.getVersion(), throwsException);
 

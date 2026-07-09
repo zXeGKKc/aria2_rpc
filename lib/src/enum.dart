@@ -46,7 +46,7 @@ enum Aria2HashType with AliasEnumMixin {
   const Aria2HashType(this.alias);
 }
 
-enum Aria2HttpFunction { get, post }
+enum Aria2HttpMethod { get, post }
 
 enum Aria2LogLevel { debug, info, notice, warn, error }
 

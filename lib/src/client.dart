@@ -507,20 +507,24 @@ sealed class Aria2RPCClient {
 class Aria2HttpClient extends Aria2RPCClient {
   @override
   final Uri uri;
-  final Aria2HttpFunction func;
+  final Aria2HttpMethod httpMethod;
   @override
   final String? secret;
 
   final _client = http.Client();
 
-  Aria2HttpClient.uri({required this.uri, required this.func, this.secret});
+  Aria2HttpClient.uri({
+    required this.uri,
+    required this.httpMethod,
+    this.secret,
+  });
 
   Aria2HttpClient({
     required String host,
     int? port,
     String? path,
     bool tls = false,
-    required this.func,
+    required this.httpMethod,
     this.secret,
   }) : uri = Uri(
          scheme: tls ? 'https' : 'http',
@@ -548,13 +552,13 @@ class Aria2HttpClient extends Aria2RPCClient {
     }
 
     final http.Response httpResponse;
-    switch (func) {
-      case Aria2HttpFunction.get:
+    switch (httpMethod) {
+      case Aria2HttpMethod.get:
         httpResponse = await _client.get(
           uri.replace(query: jsonEncode(requests)),
         );
         break;
-      case Aria2HttpFunction.post:
+      case Aria2HttpMethod.post:
         httpResponse = await _client.post(uri, body: jsonEncode(requests));
         break;
     }
@@ -577,11 +581,11 @@ class Aria2HttpClient extends Aria2RPCClient {
     final request = _buildRequest(id, method);
 
     final http.Response httpResponse;
-    switch (func) {
-      case Aria2HttpFunction.get:
+    switch (httpMethod) {
+      case Aria2HttpMethod.get:
         httpResponse = await _client.get(uri.replace(queryParameters: request));
         break;
-      case Aria2HttpFunction.post:
+      case Aria2HttpMethod.post:
         httpResponse = await _client.post(uri, body: jsonEncode(request));
         break;
     }
@@ -598,11 +602,11 @@ class Aria2HttpClient extends Aria2RPCClient {
     final request = _buildMulticallRequest(id, methods);
 
     final http.Response httpResponse;
-    switch (func) {
-      case Aria2HttpFunction.get:
+    switch (httpMethod) {
+      case Aria2HttpMethod.get:
         httpResponse = await _client.get(uri.replace(queryParameters: request));
         break;
-      case Aria2HttpFunction.post:
+      case Aria2HttpMethod.post:
         httpResponse = await _client.post(uri, body: jsonEncode(request));
         break;
     }
@@ -620,14 +624,14 @@ class Aria2HttpClient extends Aria2RPCClient {
       ...?method.params,
     ];
 
-    switch (func) {
-      case Aria2HttpFunction.get:
+    switch (httpMethod) {
+      case Aria2HttpMethod.get:
         return {
           'id': id,
           'method': method.methodName.alias,
           'params': base64Encode(utf8.encode(jsonEncode(params))),
         };
-      case Aria2HttpFunction.post:
+      case Aria2HttpMethod.post:
         return {
           'jsonrpc': '2.0',
           'id': id,
@@ -651,14 +655,14 @@ class Aria2HttpClient extends Aria2RPCClient {
       result.add({'methodName': i.methodName.alias, 'params': params});
     }
 
-    switch (func) {
-      case Aria2HttpFunction.get:
+    switch (httpMethod) {
+      case Aria2HttpMethod.get:
         return {
           'id': id,
           'method': Aria2MethodName.multicall.alias,
           'params': base64Encode(utf8.encode(jsonEncode([result]))),
         };
-      case Aria2HttpFunction.post:
+      case Aria2HttpMethod.post:
         return {
           'jsonrpc': '2.0',
           'id': id,
